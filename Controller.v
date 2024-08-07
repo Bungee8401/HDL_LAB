@@ -30,6 +30,7 @@ module Controller (
     reg [7:0] V_max;
     reg [7:0] V_min;
     reg [7:0] average;
+    reg [3:0] i;
 
     parameter INITIAL   = 8'b1000_0000;
     parameter DC_RED    = 8'b0000_0001;
@@ -85,23 +86,27 @@ module Controller (
                         i = i + 1;
                         if ( ADC < V_min) begin
                           V_min = ADC;
+                        //   next_state = DC_RED;
                         end
                         else if (ADC > V_max) begin
                           V_max = ADC;
+                        //   next_state = DC_RED;
                         end
                   end  
                   else begin
                     average = (V_max + V_min) >> 1;
                     i = 0;
+                    V_max = 0;
+                    V_min = 255;
 
                     if (average<110) begin
                         DC_Comp = DC_Comp - 7'b1;
-                        next_state = DC_RED;
+                        // next_state = DC_RED;
                     end
                         
                     else if (average>140) begin
                         DC_Comp = DC_Comp + 7'b1;
-                        next_state = DC_RED;
+                        // next_state = DC_RED;
                     end
                         
                     else begin    
@@ -110,24 +115,32 @@ module Controller (
                     end
                   end                           
                 end
-                
-
 
                 PGA_RED: begin  // PGA Gain for RED 
-                    if( 5<ADC<250 ) begin
+                    if (i<50) begin
+                        i = i+1;
+                        if (ADC > V_max) begin
+                            ADC = V_max;
+                        end
+                        else if (ADC < V_min) begin
+                            ADC = V_min;
+                        end
+                    end
+                    else begin
+                        PGA_Gain = 4'd3;
+                        if( 5<V_min && V_max<250 ) begin
                         PGA_Gain = PGA_Gain + 4'b1;
-                        next_state = PGA_RED;
-                    end
+                        // next_state = PGA_RED;
+                        end
                         
-                    else if (ADC<5 | ADC>250 | PGA_Gain==4'd15 ) begin  //cutoff happend, max_pga_gain
-                        next_state = DC_IR;
-                        RED_PGA = PGA_Gain; 
-                        PGA_Gain = 4'd0; //initial pgagain
-                    end
+                        else if (V_min<5 || V_max>250 || PGA_Gain==4'd15 ) begin  //cutoff happend, max_pga_gain
+                            next_state = DC_IR;
+                            RED_PGA = PGA_Gain; 
+                            PGA_Gain = 4'd0; //initial pgagain
+                        end
+                    end   
+                    
                 end
-
-
-
 
                 DC_IR: begin // DC comb for IR 
                     LED_RED = 1'b0;
@@ -145,14 +158,16 @@ module Controller (
                     else begin
                         average = (V_max + V_min) >> 1;
                         i = 0;
+                        V_max = 0;
+                        V_min = 255;
 
                         if (average<120) begin
                             DC_Comp = DC_Comp -7'b1;
-                            next_state = DC_IR;
+                            // next_state = DC_IR;
                         end     
                         else if (average>135) begin
                             DC_Comp = DC_Comp +7'b1;
-                            next_state = DC_IR;
+                            // next_state = DC_IR;
                         end                  
                         else begin
                             next_state = PGA_IR;
@@ -162,17 +177,29 @@ module Controller (
                 end
 
                 PGA_IR: begin
-                     if( 5<ADC<250 ) begin
-                        PGA_Gain = PGA_Gain + 4'b1;
-                        next_state = PGA_RED;
+                    if (i<50) begin
+                        i = i+1;
+                        if (ADC > V_max) begin
+                            ADC = V_max;
+                        end
+                        else if (ADC < V_min) begin
+                            ADC = V_min;
+                        end
                     end
+                    else begin
+                        PGA_Gain = 4'd3;
+                        if( 5<V_min && V_max<250 ) begin
+                            PGA_Gain = PGA_Gain + 4'b1;
+                            // next_state = PGA_RED;
+                        end
                         
-                    else if (ADC<5 | ADC>250 | PGA_Gain==4'd15 ) begin
-                        next_state = DC_IR;
-                        IR_PGA = PGA_Gain;
-                        PGA_Gain = 4'd7;
-                        Find_setting_Complete  = 1'b1;      // flag signal for LED switching block
-                    end
+                        else if (V_min<5 || V_max>250 || PGA_Gain==4'd15 ) begin  //cutoff happend, max_pga_gain
+                            next_state = DC_IR;
+                            IR_PGA = PGA_Gain; 
+                            PGA_Gain = 4'd0; //initial pgagain
+                            Find_setting_Complete  = 1'b1;      // flag signal for LED switching block
+                        end
+                    end 
                 end
 
                 INITIAL: begin              
@@ -209,15 +236,12 @@ module Controller (
     always @(posedge CLK) begin  
         if(Find_setting_Complete) begin // setting found, switch faster -> 100Hz, 10ms
             forever begin
-                #10 LED_RED = ~LED_RED;
-                #10 LED_IR = ~LED_IR;
+                #5 LED_RED = ~LED_RED;
+                #5 LED_IR = ~LED_IR;
             end
              
         end
-        
-        // else begin  // before found,switch slower
-            
-        // end
+
     end
 
 endmodule
