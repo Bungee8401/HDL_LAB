@@ -37,7 +37,21 @@ module Controller_TB ();
         forever #0.5 CLK = ~CLK;    //1000Hz 
 
         rst_n = 1'b1;
-        ADC = ;
+
+
+        integer i=0;
+        integer j=256;
+
+        while (i<255) begin
+            i = i + 1;
+            ADC = i;          
+        end
+        
+        while (j > 0) begin
+            j = j -1;
+            ADC = j            
+        end
+
 
 
 
