@@ -37,7 +37,10 @@ module Controller_TB ();
         forever #0.5 CLK = ~CLK;    //1000Hz 
 
         rst_n = 1'b1;
-        ADC = 
+        ADC = ;
+
+
+
 
     end
 

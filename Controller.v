@@ -1,4 +1,4 @@
-`timescale 1ms/1ms
+`timescale 1ms/1ps
 
 module Controller (
     input [7:0] ADC,
@@ -133,6 +133,7 @@ module Controller (
                     RED_PGA = 4'b0;
 
                     Find_setting_Complete = 1'b0;
+                    next_state = DC_RED;
                 end
                 
                 default:    next_state = INITIAL ;
@@ -155,5 +156,5 @@ module Controller (
             
         // end
     end
-    //hi! see if you can see this on github!
+
 endmodule
