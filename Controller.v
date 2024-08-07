@@ -53,18 +53,18 @@ module Controller (
 
                 DC_RED: begin // DC comb for RED 
                     LED_RED = 1'b1;
-                    if (ADC<120) begin
-                        DC_Comp = DC_Comp + 7'b1;
-                        next_state = DC_RED;
-                    end
-                        
-                    else if (ADC>136) begin
+                    LED_IR = 1'b0;
+                    if (ADC<110) begin
                         DC_Comp = DC_Comp - 7'b1;
                         next_state = DC_RED;
                     end
                         
-                    else begin
-                        LED_RED = 1'b0;
+                    else if (ADC>140) begin
+                        DC_Comp = DC_Comp + 7'b1;
+                        next_state = DC_RED;
+                    end
+                        
+                    else begin    
                         next_state = PGA_RED;
                         RED_DC_Comp = DC_Comp;
                     end
@@ -77,28 +77,30 @@ module Controller (
                         next_state = PGA_RED;
                     end
                         
-                    else if (ADC<5 | ADC>250 | PGA_Gain==4'd15 ) begin
+                    else if (ADC<5 | ADC>250 | PGA_Gain==4'd15 ) begin  //cutoff happend, max_pga_gain
                         next_state = DC_IR;
-                        RED_PGA = PGA_Gain;
-                        PGA_Gain = 4'd7;
+                        RED_PGA = PGA_Gain; 
+                        PGA_Gain = 4'd7; //initial pgagain
                     end
                 end
 
                 DC_IR: begin // DC comb for IR 
+                    LED_RED = 1'b0;
                     LED_IR = 1'b1;
+
                     if (ADC<120) begin
-                        DC_Comp = DC_Comp +7'b1;
-                        next_state = DC_RED;
+                        DC_Comp = DC_Comp -7'b1;
+                        next_state = DC_IR;
                     end
                         
-                    else if (ADC>136) begin
-                        DC_Comp = DC_Comp -7'b1;
-                        next_state = DC_RED;
+                    else if (ADC>140) begin
+                        DC_Comp = DC_Comp +7'b1;
+                        next_state = DC_IR;
                     end
                         
                     else begin
-                        next_state = PGA_RED;
-                        RED_DC_Comp = DC_Comp;
+                        next_state = PGA_IR;
+                        IR_DC_Comp = DC_Comp;
                     end
 
                 end 
@@ -140,7 +142,7 @@ module Controller (
     end
 
     //OPERATION ---- LED switching
-    always @(posedge CLK) begin   // no rst, fine here?
+    always @(posedge CLK) begin  
         if(Find_setting_Complete) begin // setting found, switch faster -> 100Hz, 10ms
             forever begin
                 #10 LED_RED = ~LED_RED;
