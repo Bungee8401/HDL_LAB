@@ -32,6 +32,8 @@ module Controller_TB ();
         .RED_ADC_Value          (RED_ADC_Value)
     ); 
 
+    reg i=1'b1;
+
     initial begin
         CLK = 1'b0;
         forever #0.5 CLK = ~CLK;    //1000Hz 
@@ -53,29 +55,6 @@ module Controller_TB ();
         end
 
 
-
-
-
     end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 endmodule
