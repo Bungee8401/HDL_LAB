@@ -134,6 +134,9 @@ module Controller (
                         end
                         
                         else if (V_min<5 || V_max>250 || PGA_Gain==4'd15 ) begin  //cutoff happend, max_pga_gain
+                            i = 0;
+                            V_max = 0;
+                            V_min = 255;
                             next_state = DC_IR;
                             RED_PGA = PGA_Gain; 
                             PGA_Gain = 4'd0; //initial pgagain
@@ -194,6 +197,9 @@ module Controller (
                         end
                         
                         else if (V_min<5 || V_max>250 || PGA_Gain==4'd15 ) begin  //cutoff happend, max_pga_gain
+                            i = 0;
+                            V_max = 0;
+                            V_min = 255;
                             next_state = DC_IR;
                             IR_PGA = PGA_Gain; 
                             PGA_Gain = 4'd0; //initial pgagain
