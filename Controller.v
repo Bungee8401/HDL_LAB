@@ -1,10 +1,10 @@
 `timescale 1ms/1ps
 
 module Controller (
-    input [7:0] ADC,
-    input Find_setting,
-    input CLK,
-    input rst_n,
+    input wire [7:0] ADC,
+    input wire Find_setting,
+    input wire CLK,
+    input wire rst_n,
 
     output reg [3:0] LED_DRIVE,
     output reg [6:0] DC_Comp,
@@ -16,21 +16,23 @@ module Controller (
     output reg [7:0] RED_ADC_Value
 );
     
-    always @(posedge CLK) begin
-        CLK_Filter <= ~CLK_Filter;
-    end
-
     reg [7:0] current_state;
     reg [7:0] next_state;
+    reg Find_setting_Complete;
+
     reg [6:0] RED_DC_Comp;
     reg [6:0] IR_DC_Comp;
+
     reg [3:0] RED_PGA;
     reg [3:0] IR_PGA;
-    reg Find_setting_Complete;
+
+
     reg [7:0] V_max;
     reg [7:0] V_min;
     reg [7:0] average;
+
     reg [3:0] i;
+    reg [3:0] timer;
 
     parameter INITIAL   = 8'b1000_0000;
     parameter DC_RED    = 8'b0000_0001;
@@ -38,8 +40,17 @@ module Controller (
     parameter DC_IR     = 8'b0000_0100;
     parameter PGA_IR    = 8'b0000_1000;
     parameter OPERATION = 8'b0001_0000;
-    
+
+
+    //clk_filter
+    always @(posedge CLK) begin
+        CLK_Filter <= ~CLK_Filter;
+    end    
+
+
     // FSM state transition 
+    default:    next_state = INITIAL ;
+    
     always @(posedge CLK or negedge rst_n) begin
         if (~rst_n) begin
             current_state <= INITIAL;
@@ -50,33 +61,34 @@ module Controller (
     end
 
 
-
-  /*  task find_average (input ADC, input CLK,
-            output average);
-            always @(posedge CLK) begin
-                wait (!dcReady);
-                while (i<10) begin  //10ms
-                    i = i + 1;
-                   if (ADC < V_min) begin
-                    V_min = ADC;
-                    else if(ADC > V_max) begin
-                        V_max = ADC;
-                        end
-                    end
-                    average = (V_max + V_min) >> 1;
-                end
-                if (i > 10) begin
-                    averageReady = 1;
-                end
-            end */
-
-
-
     // FSM state def ---- INITIAL -> DC_RED -> PGA_RED -> DC_IR -> PGA_IR, no OPERATION here! 
     // TODO: LED_DRIVE is fixed here. shouldnt be this case in cadence.   
     always @(*) begin 
         if(Find_setting && !Find_setting_Complete) begin
             case(current_state) 
+                    INITIAL: begin              
+                    CLK_Filter = 1'b0;
+                    LED_DRIVE = 4'd10;  // begin in the middle
+                    DC_Comp = 7'd64;
+                    LED_IR = 1'b0;
+                    LED_RED = 1'b0;
+                    PGA_Gain = 4'd0;    // begin in the middle
+
+                    RED_DC_Comp = 7'b0;
+                    IR_DC_Comp = 7'b1;
+                    RED_PGA = 4'b0;
+                    RED_PGA = 4'b0;
+
+                    Find_setting_Complete = 1'b0;
+                    next_state = DC_RED;
+
+                    V_min = 255;
+                    V_max = 0;
+                    average = 0;
+                    i = 0;
+                    timer = 0;
+                end
+
                 DC_RED: begin // DC comb for RED 
 
                     LED_RED = 1'b1;
@@ -120,10 +132,10 @@ module Controller (
                     if (i<50) begin
                         i = i+1;
                         if (ADC > V_max) begin
-                            ADC = V_max;
+                            V_max = ADC;
                         end
                         else if (ADC < V_min) begin
-                            ADC = V_min;
+                            V_min = ADC;
                         end
                     end
                     else begin
@@ -183,10 +195,10 @@ module Controller (
                     if (i<50) begin
                         i = i+1;
                         if (ADC > V_max) begin
-                            ADC = V_max;
+                            V_max = ADC;
                         end
                         else if (ADC < V_min) begin
-                            ADC = V_min;
+                            V_min = ADC;
                         end
                     end
                     else begin
@@ -208,46 +220,90 @@ module Controller (
                     end 
                 end
 
-                INITIAL: begin              
-                    CLK_Filter = 1'b0;
-                    LED_DRIVE = 4'd10;  // begin in the middle
-                    DC_Comp = 7'd64;
-                    LED_IR = 1'b0;
-                    LED_RED = 1'b0;
-                    PGA_Gain = 4'd0;    // begin in the middle
+                // INITIAL: begin              
+                //     CLK_Filter = 1'b0;
+                //     LED_DRIVE = 4'd10;  // begin in the middle
+                //     DC_Comp = 7'd64;
+                //     LED_IR = 1'b0;
+                //     LED_RED = 1'b0;
+                //     PGA_Gain = 4'd0;    // begin in the middle
 
-                    RED_DC_Comp = 7'b0;
-                    IR_DC_Comp = 7'b0;
-                    RED_PGA = 4'b0;
-                    RED_PGA = 4'b0;
+                //     RED_DC_Comp = 7'b0;
+                //     IR_DC_Comp = 7'b1;
+                //     RED_PGA = 4'b0;
+                //     RED_PGA = 4'b0;
 
-                    Find_setting_Complete = 1'b0;
-                    next_state = DC_RED;
+                //     Find_setting_Complete = 1'b0;
+                //     next_state = DC_RED;
 
-                    V_min = 255;
-                    V_max = 0;
-                    average = 0;
+                //     V_min = 255;
+                //     V_max = 0;
+                //     average = 0;
+                //     i = 0;
+                //     timer = 0;
 
-
-
-                end
+                // end
                 
-                default:    next_state = INITIAL ;
+              //  default:    next_state = INITIAL ;
                 
             endcase
         end
     end
 
-    //OPERATION ---- LED switching
     always @(posedge CLK) begin  
+    if(Find_setting_Complete) begin // setting found, switch faster -> 100Hz, 10ms       
+        if(timer == 9) begin
+            timer = 0;
+            LED_RED = ~LED_RED;
+            LED_IR = ~LED_IR;
+        end else begin
+            timer = timer + 1;       
+            if (LED_RED == 1) and (LED_IR == 0) begin
+                RED_ADC_Value = ADC;
+                PGA_Gain = RED_PGA;
+                DC_Comp = RED_DC_Comp;
+            end 
+
+            if (LED_RED == 0) and (LED_IR == 1) begin
+                IR_ADC_Value = ADC;
+                PGA_Gain = IR_PGA;
+                DC_Comp = IR_DC_Comp;           
+            end
+        end
+        end
+    end
+endmodule
+
+
+ //OPERATION ---- LED switching
+    /*always @(posedge CLK) begin  
         if(Find_setting_Complete) begin // setting found, switch faster -> 100Hz, 10ms
             forever begin
                 #5 LED_RED = ~LED_RED;
                 #5 LED_IR = ~LED_IR;
-            end
-             
-        end
+            end */
+                
 
-    end
 
-endmodule
+
+
+  /*  task find_average (input ADC, input CLK,
+            output average);
+            always @(posedge CLK) begin
+                wait (!dcReady);
+                while (i<10) begin  //10ms
+                    i = i + 1;
+                   if (ADC < V_min) begin
+                    V_min = ADC;
+                    else if(ADC > V_max) begin
+                        V_max = ADC;
+                        end
+                    end
+                    average = (V_max + V_min) >> 1;
+                end
+                if (i > 10) begin
+                    averageReady = 1;
+                end
+            end */
+
+            
