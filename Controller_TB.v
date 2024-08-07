@@ -36,8 +36,8 @@ module Controller_TB ();
         CLK = 1'b0;
         forever #0.5 CLK = ~CLK;    //1000Hz 
 
-        rst_n = 1'b1;
-
+        #1 rst_n = 1'b0;
+        #4 rst_n = 1'b1;
 
         integer i=0;
         integer j=256;
