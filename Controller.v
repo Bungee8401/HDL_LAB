@@ -93,7 +93,7 @@ module Controller (
                         next_state = DC_IR;
                     end
                         
-                    else if (ADC>140) begin
+                    else if (ADC>135) begin
                         DC_Comp = DC_Comp +7'b1;
                         next_state = DC_IR;
                     end
