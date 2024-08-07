@@ -1,10 +1,10 @@
 `timescale 1ms/1ps
 
 module Controller (
-    input wire [7:0] ADC,
-    input wire Find_setting,
-    input wire CLK,
-    input wire rst_n,
+    input  [7:0] ADC,
+    input  Find_setting,
+    input  CLK,
+    input  rst_n,
 
     output reg [3:0] LED_DRIVE,
     output reg [6:0] DC_Comp,
@@ -48,9 +48,7 @@ module Controller (
     end    
 
 
-    // FSM state transition 
-    default:    next_state = INITIAL ;
-    
+    // FSM state ffs    
     always @(posedge CLK or negedge rst_n) begin
         if (~rst_n) begin
             current_state <= INITIAL;
@@ -61,32 +59,37 @@ module Controller (
     end
 
 
-    // FSM state def ---- INITIAL -> DC_RED -> PGA_RED -> DC_IR -> PGA_IR, no OPERATION here! 
-    // TODO: LED_DRIVE is fixed here. shouldnt be this case in cadence.   
+
+    // FSM state transition  TODO: LED_DRIVE is fixed here. shouldnt be this case in cadence.   
     always @(*) begin 
-        if(Find_setting && !Find_setting_Complete) begin
+        if (Find_setting && Find_setting_Complete) 
+            $display ("both 1!");
+        if (Find_setting && !Find_setting_Complete) begin
             case(current_state) 
-                    INITIAL: begin              
+                
+                INITIAL: begin              
+                    
                     CLK_Filter = 1'b0;
-                    LED_DRIVE = 4'd10;  // begin in the middle
+                    LED_DRIVE = 4'd10;  // fixed now, TODO later
                     DC_Comp = 7'd64;
                     LED_IR = 1'b0;
                     LED_RED = 1'b0;
-                    PGA_Gain = 4'd0;    // begin in the middle
+                    PGA_Gain = 4'd0;    
 
                     RED_DC_Comp = 7'b0;
                     IR_DC_Comp = 7'b1;
                     RED_PGA = 4'b0;
-                    RED_PGA = 4'b0;
+                    IR_PGA = 4'b0;
 
                     Find_setting_Complete = 1'b0;
-                    next_state = DC_RED;
 
                     V_min = 255;
                     V_max = 0;
                     average = 0;
                     i = 0;
                     timer = 0;
+
+                    next_state = DC_RED;
                 end
 
                 DC_RED: begin // DC comb for RED 
@@ -244,32 +247,32 @@ module Controller (
 
                 // end
                 
-              //  default:    next_state = INITIAL ;
+                default:    next_state = INITIAL ;
                 
             endcase
         end
     end
 
     always @(posedge CLK) begin  
-    if(Find_setting_Complete) begin // setting found, switch faster -> 100Hz, 10ms       
-        if(timer == 9) begin
-            timer = 0;
-            LED_RED = ~LED_RED;
-            LED_IR = ~LED_IR;
-        end else begin
-            timer = timer + 1;       
-            if (LED_RED == 1) and (LED_IR == 0) begin
-                RED_ADC_Value = ADC;
-                PGA_Gain = RED_PGA;
-                DC_Comp = RED_DC_Comp;
-            end 
+        if(Find_setting_Complete) begin // setting found, switch faster -> 100Hz, 10ms       
+            if(timer == 9) begin
+                timer = 0;
+                LED_RED = ~LED_RED;
+                LED_IR = ~LED_IR;
+            end else begin
+                timer = timer + 1;       
+                if (LED_RED == 1) and (LED_IR == 0) begin
+                    RED_ADC_Value = ADC;
+                    PGA_Gain = RED_PGA;
+                    DC_Comp = RED_DC_Comp;
+                end 
 
-            if (LED_RED == 0) and (LED_IR == 1) begin
-                IR_ADC_Value = ADC;
-                PGA_Gain = IR_PGA;
-                DC_Comp = IR_DC_Comp;           
+                if (LED_RED == 0) and (LED_IR == 1) begin
+                    IR_ADC_Value = ADC;
+                    PGA_Gain = IR_PGA;
+                    DC_Comp = IR_DC_Comp;           
+                end
             end
-        end
         end
     end
 endmodule
