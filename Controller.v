@@ -27,6 +27,9 @@ module Controller (
     reg [3:0] RED_PGA;
     reg [3:0] IR_PGA;
     reg Find_setting_Complete;
+    reg [7:0] V_max;
+    reg [7:0] V_min;
+    reg [7:0] average;
 
     parameter INITIAL   = 8'b1000_0000;
     parameter DC_RED    = 8'b0000_0001;
@@ -45,21 +48,58 @@ module Controller (
         end
     end
 
+
+
+  /*  task find_average (input ADC, input CLK,
+            output average);
+            always @(posedge CLK) begin
+                wait (!dcReady);
+                while (i<10) begin  //10ms
+                    i = i + 1;
+                   if (ADC < V_min) begin
+                    V_min = ADC;
+                    else if(ADC > V_max) begin
+                        V_max = ADC;
+                        end
+                    end
+                    average = (V_max + V_min) >> 1;
+                end
+                if (i > 10) begin
+                    averageReady = 1;
+                end
+            end */
+
+
+
     // FSM state def ---- INITIAL -> DC_RED -> PGA_RED -> DC_IR -> PGA_IR, no OPERATION here! 
     // TODO: LED_DRIVE is fixed here. shouldnt be this case in cadence.   
     always @(*) begin 
         if(Find_setting && !Find_setting_Complete) begin
             case(current_state) 
-
                 DC_RED: begin // DC comb for RED 
+
                     LED_RED = 1'b1;
                     LED_IR = 1'b0;
-                    if (ADC<110) begin
+
+                  if (i<10) begin //10ms
+                        i = i + 1;
+                        if ( ADC < V_min) begin
+                          V_min = ADC;
+                        end
+                        else if (ADC > V_max) begin
+                          V_max = ADC;
+                        end
+                  end  
+                  else begin
+                    average = (V_max + V_min) >> 1;
+                    i = 0;
+
+                    if (average<110) begin
                         DC_Comp = DC_Comp - 7'b1;
                         next_state = DC_RED;
                     end
                         
-                    else if (ADC>140) begin
+                    else if (average>140) begin
                         DC_Comp = DC_Comp + 7'b1;
                         next_state = DC_RED;
                     end
@@ -68,9 +108,11 @@ module Controller (
                         next_state = PGA_RED;
                         RED_DC_Comp = DC_Comp;
                     end
-                        
+                  end                           
                 end
                 
+
+
                 PGA_RED: begin  // PGA Gain for RED 
                     if( 5<ADC<250 ) begin
                         PGA_Gain = PGA_Gain + 4'b1;
@@ -80,30 +122,44 @@ module Controller (
                     else if (ADC<5 | ADC>250 | PGA_Gain==4'd15 ) begin  //cutoff happend, max_pga_gain
                         next_state = DC_IR;
                         RED_PGA = PGA_Gain; 
-                        PGA_Gain = 4'd7; //initial pgagain
+                        PGA_Gain = 4'd0; //initial pgagain
                     end
                 end
+
+
+
 
                 DC_IR: begin // DC comb for IR 
                     LED_RED = 1'b0;
                     LED_IR = 1'b1;
-
-                    if (ADC<120) begin
-                        DC_Comp = DC_Comp -7'b1;
-                        next_state = DC_IR;
-                    end
-                        
-                    else if (ADC>135) begin
-                        DC_Comp = DC_Comp +7'b1;
-                        next_state = DC_IR;
-                    end
-                        
+            
+                    if (i<10) begin //10ms
+                            i = i + 1;
+                            if ( ADC < V_min) begin
+                            V_min = ADC;
+                            end
+                            else if (ADC > V_max) begin
+                            V_max = ADC;
+                            end
+                    end  
                     else begin
-                        next_state = PGA_IR;
-                        IR_DC_Comp = DC_Comp;
-                    end
+                        average = (V_max + V_min) >> 1;
+                        i = 0;
 
-                end 
+                        if (average<120) begin
+                            DC_Comp = DC_Comp -7'b1;
+                            next_state = DC_IR;
+                        end     
+                        else if (average>135) begin
+                            DC_Comp = DC_Comp +7'b1;
+                            next_state = DC_IR;
+                        end                  
+                        else begin
+                            next_state = PGA_IR;
+                            IR_DC_Comp = DC_Comp;
+                        end
+                    end 
+                end
 
                 PGA_IR: begin
                      if( 5<ADC<250 ) begin
@@ -134,6 +190,13 @@ module Controller (
 
                     Find_setting_Complete = 1'b0;
                     next_state = DC_RED;
+
+                    V_min = 255;
+                    V_max = 0;
+                    average = 0;
+
+
+
                 end
                 
                 default:    next_state = INITIAL ;
