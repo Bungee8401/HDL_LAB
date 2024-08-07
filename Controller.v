@@ -132,14 +132,17 @@ module Controller (
                 end
 
                 PGA_RED: begin  // PGA Gain for RED 
-                    if (i<50) begin
+                    if (i<1000) begin
                         i = i+1;
-                        if (ADC > V_max) begin
-                            V_max = ADC;
-                        end
-                        else if (ADC < V_min) begin
-                            V_min = ADC;
-                        end
+                        V_min = (ADC < V_min) ? ADC : V_min;
+                        V_max = (ADC > V_max) ? ADC : V_max;
+
+                        // if (ADC >= V_max) begin
+                        //     V_max = ADC;
+                        // end
+                        // else if (ADC < V_min) begin
+                        //     V_min = ADC;
+                        // end
                     end
                     else begin
                         PGA_Gain = 4'd3;
@@ -254,18 +257,18 @@ module Controller (
     end
 
     always @(posedge CLK) begin  
-        if(Find_setting_Complete) begin // setting found, switch faster -> 100Hz, 10ms       
-            if(timer == 9) begin
-                timer = 0;
-                LED_RED = ~LED_RED;
-                LED_IR = ~LED_IR;
-            end else begin
-                timer = timer + 1;       
-                if (LED_RED == 1) and (LED_IR == 0) begin
-                    RED_ADC_Value = ADC;
-                    PGA_Gain = RED_PGA;
-                    DC_Comp = RED_DC_Comp;
-                end 
+   // if(Find_setting_Complete) begin // setting found, switch faster -> 100Hz, 10ms       
+        if(timer == 9) begin
+            timer = 0;
+            LED_RED = ~LED_RED;
+            LED_IR = ~LED_IR;
+        end else begin
+            timer = timer + 1;       
+            if (LED_RED == 1) and (LED_IR == 0) begin
+                RED_ADC_Value = ADC;
+                PGA_Gain = RED_PGA;
+                DC_Comp = RED_DC_Comp;
+            end 
 
                 if (LED_RED == 0) and (LED_IR == 1) begin
                     IR_ADC_Value = ADC;
@@ -274,7 +277,8 @@ module Controller (
                 end
             end
         end
-    end
+        
+   // end
 endmodule
 
 
