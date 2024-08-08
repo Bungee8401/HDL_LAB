@@ -264,13 +264,13 @@ module Controller (
             LED_IR = ~LED_IR;
         end else begin
             timer = timer + 1;       
-            if (LED_RED == 1) and (LED_IR == 0) begin
+            if (LED_RED == 1 && LED_IR == 0) begin
                 RED_ADC_Value = ADC;
                 PGA_Gain = RED_PGA;
                 DC_Comp = RED_DC_Comp;
             end 
 
-                if (LED_RED == 0) and (LED_IR == 1) begin
+                if (LED_RED == 0 && LED_IR == 1) begin
                     IR_ADC_Value = ADC;
                     PGA_Gain = IR_PGA;
                     DC_Comp = IR_DC_Comp;           
