@@ -144,6 +144,7 @@ module Controller (
                         
                         next_state = DC_IR;
                         RED_PGA = PGA_Gain-1; 
+                        @ (negedge CLK);
                         PGA_Gain = 4'd0; //initial pgagain
                         V_max = 0;
                         V_min = 255;
