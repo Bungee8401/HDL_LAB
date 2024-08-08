@@ -125,7 +125,7 @@ module Controller (
                             RED_DC_Comp = DC_Comp;
                             V_max = 0;
                             V_min = 255;
-                            DC_Comp = 0;
+                            
                         end
                     end
                     // if ( ADC < V_min) begin
@@ -166,6 +166,7 @@ module Controller (
                             PGA_Gain = 4'd0; //initial pgagain
                             V_max = 0;
                             V_min = 255;
+                            DC_Comp = 0;
                         end
                     end   
                 end
