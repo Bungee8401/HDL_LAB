@@ -147,23 +147,27 @@ module Controller (
 
                 PGA_RED: begin  // PGA Gain for RED 
                 
-                    V_min = (ADC < V_min) ? ADC : V_min;
-                    V_max = (ADC > V_max) ? ADC : V_max;
-
-                    if (10<V_min && V_max<245) begin
-                    PGA_Gain = PGA_Gain + 4'b1;
-                    // next_state = PGA_RED;
+                    if (i<26) begin
+                        V_min = (ADC < V_min) ? ADC : V_min;
+                        V_max = (ADC > V_max) ? ADC : V_max;
+                        i=i+1;
                     end
-                    
-                    if (V_min<10 || V_max>245 || PGA_Gain == 4'd15 ) begin  //cutoff happend, max_pga_gain 
-                        next_state = DC_IR;
-                        @ (negedge CLK);
-                        RED_PGA = PGA_Gain-1; 
-                        PGA_Gain = 4'd0; //initial pgagain
-                        V_max = 0;
-                        V_min = 255;
-                    end
-                               
+                    else begin
+                        i=0;
+                        if (10<V_min && V_max<245) begin
+                            PGA_Gain = PGA_Gain + 4'b1;
+                            // next_state = PGA_RED;
+                        end
+                        
+                        if (V_min<10 || V_max>245 || PGA_Gain == 4'd15 ) begin  //cutoff happend, max_pga_gain 
+                            next_state = DC_IR;
+                            @ (negedge CLK);
+                            RED_PGA = PGA_Gain-1; 
+                            PGA_Gain = 4'd0; //initial pgagain
+                            V_max = 0;
+                            V_min = 255;
+                        end
+                    end   
                 end
 
                 DC_IR: begin // DC comb for IR 
