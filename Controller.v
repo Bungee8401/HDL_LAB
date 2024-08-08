@@ -263,19 +263,6 @@ module Controller (
     end
 endmodule
 
-
- //OPERATION ---- LED switching
-    /*always @(posedge CLK) begin  
-        if(Find_setting_Complete) begin // setting found, switch faster -> 100Hz, 10ms
-            forever begin
-                #5 LED_RED = ~LED_RED;
-                #5 LED_IR = ~LED_IR;
-            end */
-                
-
-
-
-
   /*  task find_average (input ADC, input CLK,
             output average);
             always @(posedge CLK) begin
