@@ -142,7 +142,7 @@ module Controller (
                     // average = (V_max + V_min) >> 1;     
                     
                     
-                  end                           
+                end                           
                 
 
                 PGA_RED: begin  // PGA Gain for RED 
