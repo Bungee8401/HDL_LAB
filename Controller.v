@@ -106,7 +106,7 @@ module Controller (
                     end
                     else begin
                         i=0;
-                        average = adc_sum / 20;
+                        average = adc_sum / 27;
                         if (average<120) begin
                             DC_Comp = DC_Comp - 7'b1;
                             // next_state = DC_RED;
