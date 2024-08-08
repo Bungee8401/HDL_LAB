@@ -203,23 +203,30 @@ module Controller (
                 end 
                 
                 PGA_IR: begin
-                    V_min = (ADC < V_min) ? ADC : V_min;
-                    V_max = (ADC > V_max) ? ADC : V_max;
 
-                    if (10<V_min && V_max<245) begin
-                    PGA_Gain = PGA_Gain + 4'b1;
-                    // next_state = PGA_RED;
+                    if (i<26) begin
+                        V_min = (ADC < V_min) ? ADC : V_min;
+                        V_max = (ADC > V_max) ? ADC : V_max;
+                        i=i+1;
                     end
-       
-                    if (V_min<5 || V_max>250 || PGA_Gain==4'd15 ) begin  //cutoff happend, max_pga_gain
-                        next_state = OPERATION;
-                        @ (negedge CLK);                        
-                        V_max = 0;
-                        V_min = 255;
+                    else begin
+                        i=0;
+                        if (10<V_min && V_max<245) begin
+                            PGA_Gain = PGA_Gain + 4'b1;
+                            // next_state = PGA_RED;
+                        end
                         
-                        IR_PGA = PGA_Gain-1; 
-                        PGA_Gain = 4'd0; //initial pgagain                        
-                    end                      
+                        if (V_min<10 || V_max>245 || PGA_Gain == 4'd15 ) begin   
+                            next_state = OPERATION;
+                            @ (negedge CLK);
+                            V_max = 0;
+                            V_min = 255;
+
+                            IR_PGA = PGA_Gain-1; 
+                            PGA_Gain = 4'd0; //initial pgagain
+                            
+                        end
+                    end   
                 end
 		
 
