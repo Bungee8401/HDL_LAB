@@ -120,7 +120,8 @@ module Controller (
                         // next_state = DC_RED;
                     end
                         
-                    else begin    
+                    else begin
+                        @ (negedge CLK);    
                         next_state = PGA_RED;
                         RED_DC_Comp = DC_Comp;
                         V_max = 0;
@@ -141,10 +142,9 @@ module Controller (
                     end
                     
                     if (V_min<10 || V_max>245 || PGA_Gain == 4'd15 ) begin  //cutoff happend, max_pga_gain 
-                        
-                        next_state = DC_IR;
-                        RED_PGA = PGA_Gain-1; 
                         @ (negedge CLK);
+                        RED_PGA = PGA_Gain-1; 
+                        next_state = DC_IR;
                         PGA_Gain = 4'd0; //initial pgagain
                         V_max = 0;
                         V_min = 255;
@@ -178,6 +178,7 @@ module Controller (
                     end
                 
                     else begin
+                        @ (negedge CLK);
                         next_state = PGA_IR;
                         IR_DC_Comp = DC_Comp;
                         V_max = 0;
@@ -195,7 +196,8 @@ module Controller (
                     // next_state = PGA_RED;
                     end
        
-                    if (V_min<5 || V_max>250 || PGA_Gain==4'd15 ) begin  //cutoff happend, max_pga_gain                        
+                    if (V_min<5 || V_max>250 || PGA_Gain==4'd15 ) begin  //cutoff happend, max_pga_gain
+                        @ (negedge CLK);                        
                         V_max = 0;
                         V_min = 255;
                         next_state = OPERATION;
