@@ -228,9 +228,9 @@ module Controller (
                 end
 		
 
-		OPERATION:begin
-		    Find_setting_Complete  = 1'b1;      // flag signal for LED switching block
-		end
+		        OPERATION:begin
+		            Find_setting_Complete  = 1'b1;      // flag signal for LED switching block
+		        end
 
                 default:    next_state = INITIAL ;
                 
