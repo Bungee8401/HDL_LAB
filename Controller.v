@@ -31,7 +31,7 @@ module Controller (
     reg [7:0] V_min;
     reg [7:0] average;
 
-    reg [3:0] i;
+    reg [7:0] i;
     reg [3:0] timer;
 
     parameter INITIAL   = 8'b1000_0000;
@@ -132,7 +132,7 @@ module Controller (
                 end
 
                 PGA_RED: begin  // PGA Gain for RED 
-                    if (i<1000) begin
+                    if (i<50) begin
                         i = i+1;
                         V_min = (ADC < V_min) ? ADC : V_min;
                         V_max = (ADC > V_max) ? ADC : V_max;
@@ -145,22 +145,20 @@ module Controller (
                         // end
                     end
                     else begin
-                        PGA_Gain = 4'd3;
+			i=0;
                         if( 5<V_min && V_max<250 ) begin
                         PGA_Gain = PGA_Gain + 4'b1;
                         // next_state = PGA_RED;
                         end
                         
                         else if (V_min<5 || V_max>250 || PGA_Gain==4'd15 ) begin  //cutoff happend, max_pga_gain
-                            i = 0;
-                            V_max = 0;
-                            V_min = 255;
+		            V_min = 255;
+			    V_max = 0;
                             next_state = DC_IR;
                             RED_PGA = PGA_Gain; 
                             PGA_Gain = 4'd0; //initial pgagain
                         end
-                    end   
-                    
+                    end           
                 end
 
                 DC_IR: begin // DC comb for IR 
@@ -208,48 +206,29 @@ module Controller (
                         end
                     end
                     else begin
-                        PGA_Gain = 4'd3;
+                        i=0;
                         if( 5<V_min && V_max<250 ) begin
                             PGA_Gain = PGA_Gain + 4'b1;
                             // next_state = PGA_RED;
                         end
                         
                         else if (V_min<5 || V_max>250 || PGA_Gain==4'd15 ) begin  //cutoff happend, max_pga_gain
-                            i = 0;
+                            
                             V_max = 0;
                             V_min = 255;
-                            next_state = DC_IR;
+                            next_state = OPERATION;
                             IR_PGA = PGA_Gain; 
                             PGA_Gain = 4'd0; //initial pgagain
-                            Find_setting_Complete  = 1'b1;      // flag signal for LED switching block
+                            
                         end
                     end 
                 end
+		
 
-                // INITIAL: begin              
-                //     CLK_Filter = 1'b0;
-                //     LED_DRIVE = 4'd10;  // begin in the middle
-                //     DC_Comp = 7'd64;
-                //     LED_IR = 1'b0;
-                //     LED_RED = 1'b0;
-                //     PGA_Gain = 4'd0;    // begin in the middle
+		OPERATION:begin
+		    Find_setting_Complete  = 1'b1;      // flag signal for LED switching block
+		end
 
-                //     RED_DC_Comp = 7'b0;
-                //     IR_DC_Comp = 7'b1;
-                //     RED_PGA = 4'b0;
-                //     RED_PGA = 4'b0;
-
-                //     Find_setting_Complete = 1'b0;
-                //     next_state = DC_RED;
-
-                //     V_min = 255;
-                //     V_max = 0;
-                //     average = 0;
-                //     i = 0;
-                //     timer = 0;
-
-                // end
-                
                 default:    next_state = INITIAL ;
                 
             endcase
@@ -257,7 +236,7 @@ module Controller (
     end
 
     always @(posedge CLK) begin  
-   // if(Find_setting_Complete) begin // setting found, switch faster -> 100Hz, 10ms       
+     if(Find_setting_Complete) begin // setting found, switch faster -> 100Hz, 10ms       
         if(timer == 9) begin
             timer = 0;
             LED_RED = ~LED_RED;
@@ -278,7 +257,7 @@ module Controller (
             end
         end
         
-   // end
+    end
 endmodule
 
 
