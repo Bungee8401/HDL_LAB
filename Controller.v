@@ -125,6 +125,7 @@ module Controller (
                         RED_DC_Comp = DC_Comp;
                         V_max = 0;
                         V_min = 255;
+                        DC_Comp = 0;
                     end
                   end                           
                 
@@ -180,6 +181,7 @@ module Controller (
                         IR_DC_Comp = DC_Comp;
                         V_max = 0;
                         V_min = 255;
+                        DC_Comp = 0;
                     end
                 end 
                 
