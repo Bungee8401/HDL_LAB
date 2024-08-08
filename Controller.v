@@ -222,6 +222,8 @@ module Controller (
                             PGA_Gain = 4'd0; //initial pgagain
                             
                         end
+
+                        
                     end 
                 end
 		
