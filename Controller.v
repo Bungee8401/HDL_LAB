@@ -70,10 +70,10 @@ module Controller (
             case(current_state) 
                 
                 INITIAL: begin              
-                    
+                    @(negedge CLK)
                     CLK_Filter = 1'b0;
                     LED_DRIVE = 4'd10;  // fixed now, TODO later
-                    DC_Comp = 7'd64;
+                    DC_Comp = 7'd0;
                     LED_IR = 1'b0;
                     LED_RED = 1'b0;
                     PGA_Gain = 4'd0;    
@@ -155,13 +155,13 @@ module Controller (
                         
                         else if (V_min<5 || V_max>250 || PGA_Gain == 4'd15 ) begin  //cutoff happend, max_pga_gain
                             
-                            else begin
+                            
                                 V_min = 255;
                                 V_max = 0;
                                 next_state = DC_IR;
                                 RED_PGA = PGA_Gain-1; 
                                 PGA_Gain = 4'd0; //initial pgagain
-                            end
+                            
 		                    
                         end
                     end           
@@ -246,21 +246,21 @@ module Controller (
     always @(posedge CLK) begin  
      if(Find_setting_Complete) begin // setting found, switch faster -> 100Hz, 10ms       
         if(timer == 9) begin
-            timer = 0;
-            LED_RED = ~LED_RED;
-            LED_IR = ~LED_IR;
+            timer <= 0;
+            LED_RED <= ~LED_RED;
+            LED_IR <= ~LED_IR;
         end else begin
-            timer = timer + 1;       
+            timer <= timer + 1;       
             if (LED_RED == 1 && LED_IR == 0) begin
-                RED_ADC_Value = ADC;
-                PGA_Gain = RED_PGA;
-                DC_Comp = RED_DC_Comp;
+                RED_ADC_Value <= ADC;
+                PGA_Gain <= RED_PGA;
+                DC_Comp <= RED_DC_Comp;
             end 
 
                 if (LED_RED == 0 && LED_IR == 1) begin
-                    IR_ADC_Value = ADC;
-                    PGA_Gain = IR_PGA;
-                    DC_Comp = IR_DC_Comp;           
+                    IR_ADC_Value <= ADC;
+                    PGA_Gain <= IR_PGA;
+                    DC_Comp <= IR_DC_Comp;           
                 end
             end
         end
