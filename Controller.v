@@ -101,13 +101,15 @@ module Controller (
                    
                     if ( ADC < V_min) begin
                         V_min = ADC;
+                        i = i+1;
                     //   next_state = DC_RED;
                     end
                     else if (ADC > V_max) begin
                         V_max = ADC;
+                        i = i+1;
                     //   next_state = DC_RED;
                     end
-                      
+                    wait(i%20==0); 
                     average = (V_max + V_min) >> 1;     
                     
                     if (average<120) begin
@@ -123,7 +125,7 @@ module Controller (
                     else begin
                         next_state = PGA_RED;
                         @ (negedge CLK);    
-                        
+                        i=0;
                         RED_DC_Comp = DC_Comp;
                         V_max = 0;
                         V_min = 255;
