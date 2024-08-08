@@ -173,36 +173,32 @@ module Controller (
                 DC_IR: begin // DC comb for IR 
                     LED_RED = 1'b0;
                     LED_IR = 1'b1;
-            
-                    if ( ADC < V_min) begin
-                        V_min = ADC;
-                    //   next_state = DC_RED;
+
+                    if (i<26) begin
+                        adc_sum = adc_sum + ADC;
+                        i=i+1;
                     end
-                    else if (ADC > V_max) begin
-                        V_max = ADC;
-                    //   next_state = DC_RED;
-                    end
-                      
-                    average = (V_max + V_min) >> 1;     
-                    
-                    if (average<120) begin
-                        DC_Comp = DC_Comp - 7'b1;
-                        // next_state = DC_RED;
-                    end
-                        
-                    else if (average>130) begin
-                        DC_Comp = DC_Comp + 7'b1;
-                        // next_state = DC_RED;
-                    end
-                
                     else begin
-                        
-                        next_state = PGA_IR;
-                        @ (negedge CLK);
-                        IR_DC_Comp = DC_Comp;
-                        V_max = 0;
-                        V_min = 255;
-                        DC_Comp = 0;
+                        i=0;
+                        average = adc_sum / 27;
+                        adc_sum = 13'b0;
+                    
+                        if (average<120) begin
+                            DC_Comp = DC_Comp - 7'b1;  
+                        end
+                            
+                        else if (average>130) begin
+                            DC_Comp = DC_Comp + 7'b1;    
+                        end
+                    
+                        else begin  
+                            next_state = PGA_IR;
+                            @ (negedge CLK);
+                            IR_DC_Comp = DC_Comp;
+                            V_max = 0;
+                            V_min = 255;
+                            DC_Comp = 0;
+                        end
                     end
                 end 
                 
