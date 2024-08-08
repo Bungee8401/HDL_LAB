@@ -34,6 +34,7 @@ module Controller (
     reg [7:0] i;
     reg [7:0] j;
     reg [3:0] timer;
+    reg [12:0] adc_sum;
 
     parameter INITIAL   = 8'b1000_0000;
     parameter DC_RED    = 8'b0000_0001;
@@ -75,7 +76,8 @@ module Controller (
                     DC_Comp = 7'd0;
                     LED_IR = 1'b0;
                     LED_RED = 1'b0;
-                    PGA_Gain = 4'd0;    
+                    PGA_Gain = 4'd0;
+                    adc_sum = 13'b0;    
 
                     RED_DC_Comp = 7'b0;
                     IR_DC_Comp = 7'b1;
@@ -98,39 +100,47 @@ module Controller (
                     LED_RED = 1'b1;
                     LED_IR = 1'b0;
 
-                   
-                    if ( ADC < V_min) begin
-                        V_min = ADC;
-                        i = i+1;
-                    //   next_state = DC_RED;
+                    if (i<20) begin
+                        adc_sum = adc_sum + ADC;
+                        i=i+1;
                     end
-                    else if (ADC > V_max) begin
-                        V_max = ADC;
-                        i = i+1;
-                    //   next_state = DC_RED;
-                    end
-                    wait(i%20==0); 
-                    average = (V_max + V_min) >> 1;     
-                    
-                    if (average<120) begin
-                        DC_Comp = DC_Comp - 7'b1;
-                        // next_state = DC_RED;
-                    end
-                        
-                    else if (average>130) begin
-                        DC_Comp = DC_Comp + 7'b1;
-                        // next_state = DC_RED;
-                    end
-                        
                     else begin
-                        next_state = PGA_RED;
-                        @ (negedge CLK);    
                         i=0;
-                        RED_DC_Comp = DC_Comp;
-                        V_max = 0;
-                        V_min = 255;
-                        DC_Comp = 0;
+                        average = adc_sum / 20;
+                        if (average<120) begin
+                            DC_Comp = DC_Comp - 7'b1;
+                            // next_state = DC_RED;
+                        end
+                            
+                        else if (average>130) begin
+                            DC_Comp = DC_Comp + 7'b1;
+                            // next_state = DC_RED;
+                        end
+                            
+                        else begin
+                            next_state = PGA_RED;
+                            @ (negedge CLK);    
+                            i=0;
+                            RED_DC_Comp = DC_Comp;
+                            V_max = 0;
+                            V_min = 255;
+                            DC_Comp = 0;
+                        end
                     end
+                    // if ( ADC < V_min) begin
+                    //     V_min = ADC;
+                        
+                    // //   next_state = DC_RED;
+                    // end
+                    // else if (ADC > V_max) begin
+                    //     V_max = ADC;
+                        
+                    // //   next_state = DC_RED;
+                    // end
+                    
+                    // average = (V_max + V_min) >> 1;     
+                    
+                    
                   end                           
                 
 
