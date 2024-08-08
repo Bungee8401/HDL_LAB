@@ -98,7 +98,7 @@ module Controller (
                     LED_RED = 1'b1;
                     LED_IR = 1'b0;
 
-                  if (i<10) begin //10ms
+                    if (i<10) begin //10ms
                         i = i + 1;
                         if ( ADC < V_min) begin
                           V_min = ADC;
@@ -108,12 +108,12 @@ module Controller (
                           V_max = ADC;
                         //   next_state = DC_RED;
                         end
-                  end  
-                  else begin
-                    average = (V_max + V_min) >> 1;
-                    i = 0;
-                    V_max = 0;
-                    V_min = 255;
+                    end  
+                    else begin
+                        average = (V_max + V_min) >> 1;
+                        i = 0;
+                        V_max = 0;
+                        V_min = 255;
 
                     if (average<110) begin
                         DC_Comp = DC_Comp - 7'b1;
@@ -146,15 +146,15 @@ module Controller (
                         // end
                     end
                     else begin
-			i=0;
+			            i=0;
                         if( 5<V_min && V_max<250 ) begin
                         PGA_Gain = PGA_Gain + 4'b1;
                         // next_state = PGA_RED;
                         end
                         
                         else if (V_min<5 || V_max>250 || PGA_Gain==4'd15 ) begin  //cutoff happend, max_pga_gain
-		            V_min = 255;
-			    V_max = 0;
+		                    V_min = 255;
+			                V_max = 0;
                             next_state = DC_IR;
                             RED_PGA = PGA_Gain; 
                             PGA_Gain = 4'd0; //initial pgagain
