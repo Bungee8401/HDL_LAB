@@ -55,6 +55,9 @@ module Controller (
             current_state <= INITIAL;
         end
         else if (Find_setting) begin 
+            current_state <= DC_RED;
+        end
+        else begin
             current_state <= next_state;
         end
     end
@@ -63,10 +66,6 @@ module Controller (
 
     // FSM state transition  TODO: LED_DRIVE is fixed here. shouldnt be this case in cadence.   
     always @(*) begin 
-        if (!Find_setting) 
-            //$display ("both 1!");
-	    next_state = OPERATION;
-        if (Find_setting) begin
             case(current_state) 
                 
                 INITIAL: begin              
@@ -99,29 +98,24 @@ module Controller (
                     LED_RED = 1'b1;
                     LED_IR = 1'b0;
 
-                    if (i<10) begin //10ms
-                        i = i + 1;
-                        if ( ADC < V_min) begin
-                          V_min = ADC;
-                        //   next_state = DC_RED;
-                        end
-                        else if (ADC > V_max) begin
-                          V_max = ADC;
-                        //   next_state = DC_RED;
-                        end
-                    end  
-                    else begin
-                        average = (V_max + V_min) >> 1;
-                        i = 0;
-                        V_max = 0;
-                        V_min = 255;
-
-                    if (average<110) begin
+                   
+                    if ( ADC < V_min) begin
+                        V_min = ADC;
+                    //   next_state = DC_RED;
+                    end
+                    else if (ADC > V_max) begin
+                        V_max = ADC;
+                    //   next_state = DC_RED;
+                    end
+                      
+                    average = (V_max + V_min) >> 1;     
+                    
+                    if (average<120) begin
                         DC_Comp = DC_Comp - 7'b1;
                         // next_state = DC_RED;
                     end
                         
-                    else if (average>140) begin
+                    else if (average>130) begin
                         DC_Comp = DC_Comp + 7'b1;
                         // next_state = DC_RED;
                     end
@@ -129,133 +123,108 @@ module Controller (
                     else begin    
                         next_state = PGA_RED;
                         RED_DC_Comp = DC_Comp;
+                        V_max = 0;
+                        V_min = 255;
                     end
                   end                           
                 end
 
                 PGA_RED: begin  // PGA Gain for RED 
-                    if (i<50) begin
-                        i = i+1;
-                        V_min = (ADC < V_min) ? ADC : V_min;
-                        V_max = (ADC > V_max) ? ADC : V_max;
+                
+                    V_min = (ADC < V_min) ? ADC : V_min;
+                    V_max = (ADC > V_max) ? ADC : V_max;
 
-                        // if (ADC >= V_max) begin
-                        //     V_max = ADC;
-                        // end
-                        // else if (ADC < V_min) begin
-                        //     V_min = ADC;
-                        // end
+                    if (10<V_min && V_max<245) begin
+                    PGA_Gain = PGA_Gain + 4'b1;
+                    // next_state = PGA_RED;
                     end
-                    else begin
-			            i=0;
-                        if( 5<V_min && V_max<250 ) begin
-                        PGA_Gain = PGA_Gain + 4'b1;
-                        // next_state = PGA_RED;
-                        end
-                        
-                        else if (V_min<5 || V_max>250 || PGA_Gain == 4'd15 ) begin  //cutoff happend, max_pga_gain
-                            
-                            
-                                V_min = 255;
-                                V_max = 0;
-                                next_state = DC_IR;
-                                RED_PGA = PGA_Gain-1; 
-                                PGA_Gain = 4'd0; //initial pgagain
-                            
-		                    
-                        end
-                    end           
+                    
+                    if (V_min<10 || V_max>245 || PGA_Gain == 4'd15 ) begin  //cutoff happend, max_pga_gain 
+                        V_min = 255;
+                        V_max = 0;
+                        next_state = DC_IR;
+                        RED_PGA = PGA_Gain-1; 
+                        PGA_Gain = 4'd0; //initial pgagain
+                        V_max = 0;
+                        V_min = 255;
+                    end
+                               
                 end
 
                 DC_IR: begin // DC comb for IR 
                     LED_RED = 1'b0;
                     LED_IR = 1'b1;
             
-                    if (i<10) begin //10ms
-                            i = i + 1;
-                            if ( ADC < V_min) begin
-                            V_min = ADC;
-                            end
-                            else if (ADC > V_max) begin
-                            V_max = ADC;
-                            end
-                    end  
+                    if ( ADC < V_min) begin
+                        V_min = ADC;
+                    //   next_state = DC_RED;
+                    end
+                    else if (ADC > V_max) begin
+                        V_max = ADC;
+                    //   next_state = DC_RED;
+                    end
+                      
+                    average = (V_max + V_min) >> 1;     
+                    
+                    if (average<120) begin
+                        DC_Comp = DC_Comp - 7'b1;
+                        // next_state = DC_RED;
+                    end
+                        
+                    else if (average>130) begin
+                        DC_Comp = DC_Comp + 7'b1;
+                        // next_state = DC_RED;
+                    end
+                
                     else begin
-                        average = (V_max + V_min) >> 1;
-                        i = 0;
+                        next_state = PGA_IR;
+                        IR_DC_Comp = DC_Comp;
                         V_max = 0;
                         V_min = 255;
-
-                        if (average<120) begin
-                            DC_Comp = DC_Comp -7'b1;
-                            // next_state = DC_IR;
-                        end     
-                        else if (average>135) begin
-                            DC_Comp = DC_Comp +7'b1;
-                            // next_state = DC_IR;
-                        end                  
-                        else begin
-                            next_state = PGA_IR;
-                            IR_DC_Comp = DC_Comp;
-                        end
-                    end 
-                end
-
-                PGA_IR: begin
-                    if (i<50) begin
-                        i = i+1;
-                        if (ADC > V_max) begin
-                            V_max = ADC;
-                        end
-                        else if (ADC < V_min) begin
-                            V_min = ADC;
-                        end
                     end
-                    else begin
-                        i=0;
-                        if( 5<V_min && V_max<250 ) begin
-                            PGA_Gain = PGA_Gain + 4'b1;
-                            // next_state = PGA_RED;
-                        end
-                        
-                        else if (V_min<5 || V_max>250 || PGA_Gain==4'd15 ) begin  //cutoff happend, max_pga_gain
-                            
-                            V_max = 0;
-                            V_min = 255;
-                            next_state = OPERATION;
-                            IR_PGA = PGA_Gain-1; 
-                            PGA_Gain = 4'd0; //initial pgagain
-                            
-                        end
+                end 
+                
+                PGA_IR: begin
+                    V_min = (ADC < V_min) ? ADC : V_min;
+                    V_max = (ADC > V_max) ? ADC : V_max;
 
-                        
-                    end 
+                    if (10<V_min && V_max<245) begin
+                    PGA_Gain = PGA_Gain + 4'b1;
+                    // next_state = PGA_RED;
+                    end
+       
+                    if (V_min<5 || V_max>250 || PGA_Gain==4'd15 ) begin  //cutoff happend, max_pga_gain                        
+                        V_max = 0;
+                        V_min = 255;
+                        next_state = OPERATION;
+                        IR_PGA = PGA_Gain-1; 
+                        PGA_Gain = 4'd0; //initial pgagain                        
+                    end                      
                 end
 		
 
-		        OPERATION:begin
+		        OPERATION: begin
 		            Find_setting_Complete  = 1'b1;      // flag signal for LED switching block
 		        end
 
                 default:    next_state = INITIAL ;
                 
             endcase
-        end
     end
 
     always @(posedge CLK) begin  
-     if(Find_setting_Complete) begin // setting found, switch faster -> 100Hz, 10ms       
-        if(timer == 9) begin
-            timer <= 0;
-            LED_RED <= ~LED_RED;
-            LED_IR <= ~LED_IR;
-        end else begin
-            timer <= timer + 1;       
-            if (LED_RED == 1 && LED_IR == 0) begin
-                RED_ADC_Value <= ADC;
-                PGA_Gain <= RED_PGA;
-                DC_Comp <= RED_DC_Comp;
-            end 
+        if(Find_setting_Complete) begin // setting found, switch faster -> 100Hz, 10ms       
+            if(timer == 9) begin
+                timer <= 0;
+                LED_RED <= ~LED_RED;
+                LED_IR <= ~LED_IR;
+            end else begin
+                timer <= timer + 1;       
+                if (LED_RED == 1 && LED_IR == 0) begin
+                    RED_ADC_Value <= ADC;
+                    PGA_Gain <= RED_PGA;
+                    DC_Comp <= RED_DC_Comp;
+                end 
 
                 if (LED_RED == 0 && LED_IR == 1) begin
                     IR_ADC_Value <= ADC;
