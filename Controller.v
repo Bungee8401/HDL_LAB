@@ -29,7 +29,7 @@ module Controller (
 
     reg [7:0] V_max;
     reg [7:0] V_min;
-    reg [7:0] average;
+    reg [8:0] average;
 
     reg [7:0] i;
     reg [3:0] timer;
@@ -62,9 +62,10 @@ module Controller (
 
     // FSM state transition  TODO: LED_DRIVE is fixed here. shouldnt be this case in cadence.   
     always @(*) begin 
-        if (Find_setting && Find_setting_Complete) 
-            $display ("both 1!");
-        if (Find_setting && !Find_setting_Complete) begin
+        if (!Find_setting) 
+            //$display ("both 1!");
+	    next_state = OPERATION;
+        if (Find_setting) begin
             case(current_state) 
                 
                 INITIAL: begin              
