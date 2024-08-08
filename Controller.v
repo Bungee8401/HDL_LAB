@@ -100,7 +100,7 @@ module Controller (
                     LED_RED = 1'b1;
                     LED_IR = 1'b0;
 
-                    if (i<20) begin
+                    if (i<27) begin
                         adc_sum = adc_sum + ADC;
                         i=i+1;
                     end
