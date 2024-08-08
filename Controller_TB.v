@@ -1,9 +1,9 @@
 `timescale 1ms/1ps
-`include "Controller.v"
+//`include "Controller.v"
 
 module Controller_TB ();
     
-    reg [7:0] ADC;
+    wire [7:0] ADC;
     reg Find_setting;
     reg CLK;
     reg rst_n;
@@ -17,7 +17,7 @@ module Controller_TB ();
     wire [7:0] IR_ADC_Value;
     wire [7:0] RED_ADC_Value;
     
-    Controller controller_ins1 (
+    Controller ctl_dut (
         .ADC                    (ADC),
         .Find_setting           (Find_setting),
         .CLK                    (CLK),
@@ -31,31 +31,38 @@ module Controller_TB ();
         .IR_ADC_Value           (IR_ADC_Value),
         .RED_ADC_Value          (RED_ADC_Value)
     ); 
+	
+	Fingerclip_Model_v2 front_dut (
+	.DC_Comp	(DC_Comp),
+	.PGA_Gain	(PGA_Gain),
+	.LED_RED	(LED_RED),
+	.LED_IR		(LED_IR),
+	.Vppg		(ADC)
+);
+	
 
-    reg i=1'b1;
-
-    initial begin
-        CLK = 1'b0;
+initial begin
+	CLK = 1'b0;
         forever #0.5 CLK = ~CLK;    //1000Hz 
 
-        #1  rst_n = 1'b0;
-            Find_setting = 1'b0;
-        #4  rst_n = 1'b1;
-            Find_setting = 1'b1;
-            
-        integer i=0;
-        integer j=256;
+end
 
-        while (i<255) begin
-            i = i + 1;
-            ADC = i;          
-        end
+
+  initial begin
         
-        while (j > 0) begin
-            j = j -1;
-            ADC = j            
-        end
+        rst_n = 1'b0;
+        Find_setting = 1'b0;
+        #2  
+	rst_n = 1'b1;     
+	Find_setting = 1'b1;
+	#1
+	Find_setting = 1'b0;
+            
 
+	
+ 	#50000
+	$stop;
+	
 
     end
 
