@@ -32,6 +32,7 @@ module Controller (
     reg [8:0] average;
 
     reg [7:0] i;
+    reg [7:0] j;
     reg [3:0] timer;
 
     parameter INITIAL   = 8'b1000_0000;
@@ -152,12 +153,16 @@ module Controller (
                         // next_state = PGA_RED;
                         end
                         
-                        else if (V_min<5 || V_max>250 || PGA_Gain==4'd15 ) begin  //cutoff happend, max_pga_gain
-		                    V_min = 255;
-			                V_max = 0;
-                            next_state = DC_IR;
-                            RED_PGA = PGA_Gain; 
-                            PGA_Gain = 4'd0; //initial pgagain
+                        else if (V_min<5 || V_max>250 || PGA_Gain == 4'd15 ) begin  //cutoff happend, max_pga_gain
+                            
+                            else begin
+                                V_min = 255;
+                                V_max = 0;
+                                next_state = DC_IR;
+                                RED_PGA = PGA_Gain-1; 
+                                PGA_Gain = 4'd0; //initial pgagain
+                            end
+		                    
                         end
                     end           
                 end
@@ -218,7 +223,7 @@ module Controller (
                             V_max = 0;
                             V_min = 255;
                             next_state = OPERATION;
-                            IR_PGA = PGA_Gain; 
+                            IR_PGA = PGA_Gain-1; 
                             PGA_Gain = 4'd0; //initial pgagain
                             
                         end
