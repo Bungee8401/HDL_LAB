@@ -127,7 +127,7 @@ module Controller (
                         V_min = 255;
                     end
                   end                           
-                end
+                
 
                 PGA_RED: begin  // PGA Gain for RED 
                 
