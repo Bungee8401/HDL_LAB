@@ -43,7 +43,7 @@ module Controller_TB ();
 
 initial begin
 	CLK = 1'b0;
-        forever #0.5 CLK = ~CLK;    //1000Hz 
+    forever #0.5 CLK = ~CLK;    //1000Hz 
 
 end
 
@@ -53,10 +53,10 @@ end
         rst_n = 1'b0;
         Find_setting = 1'b0;
         #2  
-	rst_n = 1'b1;     
-	Find_setting = 1'b1;
-	#1
-	Find_setting = 1'b0;
+        rst_n = 1'b1;     
+        Find_setting = 1'b1;
+        #1
+        Find_setting = 1'b0;
             
 
 	
