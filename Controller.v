@@ -18,7 +18,7 @@ module Controller (
     
     reg [7:0] current_state;
     reg [7:0] next_state;
-    reg Find_setting_Complete;
+    reg Find_setting_Complete = 1'b0;
 
     reg [6:0] RED_DC_Comp;
     reg [6:0] IR_DC_Comp;
