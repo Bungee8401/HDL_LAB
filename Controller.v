@@ -42,7 +42,7 @@ module Controller (
     parameter OPERATION = 8'b0001_0000;
 
 
-    //clk_filter
+    //generate clk_filter
     always @(posedge CLK) begin
         CLK_Filter <= ~CLK_Filter;
     end    
@@ -60,7 +60,7 @@ module Controller (
 
 
 
-    // FSM state transition  TODO: LED_DRIVE is fixed here. shouldnt be this case in cadence.   
+    // FSM state transition     TODO: LED_DRIVE is fixed here. shouldnt be this case in cadence.   
     always @(*) begin 
         if (Find_setting && Find_setting_Complete) 
             $display ("both 1!");
@@ -145,15 +145,15 @@ module Controller (
                         // end
                     end
                     else begin
-			i=0;
+			            i=0;
                         if( 5<V_min && V_max<250 ) begin
                         PGA_Gain = PGA_Gain + 4'b1;
                         // next_state = PGA_RED;
                         end
                         
                         else if (V_min<5 || V_max>250 || PGA_Gain==4'd15 ) begin  //cutoff happend, max_pga_gain
-		            V_min = 255;
-			    V_max = 0;
+		                    V_min = 255;
+			                V_max = 0;
                             next_state = DC_IR;
                             RED_PGA = PGA_Gain; 
                             PGA_Gain = 4'd0; //initial pgagain
@@ -224,7 +224,6 @@ module Controller (
                     end 
                 end
 		
-
 		OPERATION:begin
 		    Find_setting_Complete  = 1'b1;      // flag signal for LED switching block
 		end
@@ -235,6 +234,7 @@ module Controller (
         end
     end
 
+    // OPERATION 
     always @(posedge CLK) begin  
      if(Find_setting_Complete) begin // setting found, switch faster -> 100Hz, 10ms       
         if(timer == 9) begin
