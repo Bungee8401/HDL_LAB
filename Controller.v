@@ -29,7 +29,7 @@ module Controller (
 
     reg [7:0] V_max;
     reg [7:0] V_min;
-    reg [7:0] average;
+    reg [8:0] average;
 
     reg [7:0] i;
     reg [3:0] timer;
