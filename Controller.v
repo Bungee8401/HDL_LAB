@@ -149,7 +149,8 @@ module Controller (
                             V_max = 0;
                             V_min = 255;
                             //DC_Comp = 0;
-                            PGA_Gain = 4'd0;
+                            //PGA_Gain = 4'd0;
+                            PGA_Gain = 4'd7;
                         end
                     end
                     // if ( ADC < V_min) begin
@@ -180,37 +181,19 @@ module Controller (
                     else begin
                         i=0;
                         if (10<V_min && V_max<245) begin
-<<<<<<< HEAD
                             V_max = 0;
                             V_min = 255; 
                             PGA_Gain = PGA_Gain + 4'b1;
                             next_state = PGA_RED_IN;
                             
-=======
-                            PGA_Gain = PGA_Gain + 4'd2;
-                            // next_state = PGA_RED;
->>>>>>> 8cab80f533586ddbf2d9034bf22a642be9399308
                         end
                         
-<<<<<<< HEAD
                         if (V_min<10 || V_max>245 ) begin  
-=======
-                        if (V_min<10 || V_max>245 || PGA_Gain == 4'd15 ) begin  //cutoff happend, max_pga_gain 
-                            next_state = DC_IR;
-                            @ (negedge CLK);
-                            RED_PGA = PGA_Gain-2; 
-                            PGA_Gain = 4'd0; //initial pgagain
->>>>>>> 8cab80f533586ddbf2d9034bf22a642be9399308
                             V_max = 0;
-<<<<<<< HEAD
                             V_min = 255; 
                             PGA_Gain = PGA_Gain - 4'b1;
                             next_state = PGA_RED_OUT;
                                                 
-=======
-                            V_min = 255;
-			    
->>>>>>> 8cab80f533586ddbf2d9034bf22a642be9399308
                         end
                     end   
                 end
@@ -322,7 +305,8 @@ module Controller (
                             V_max = 0;
                             V_min = 255;
                             // DC_Comp = 0;
-                            PGA_Gain = 4'd0;
+                            // PGA_Gain = 4'd0;
+                            PGA_Gain = 4'd7;
                         end
                     end
                 end 
