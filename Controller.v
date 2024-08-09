@@ -73,7 +73,7 @@ module Controller (
                     @(negedge CLK)
                     CLK_Filter = 1'b0;
                     LED_DRIVE = 4'd10;  // fixed now, TODO later
-                    DC_Comp = 7'd0;
+                    DC_Comp = 7'd44;	// start somewhere
                     LED_IR = 1'b0;
                     LED_RED = 1'b0;
                     PGA_Gain = 4'd0;
@@ -108,14 +108,16 @@ module Controller (
                         i=0;
                         average = adc_sum / 27;
                         adc_sum = 13'b0;
-                        if (average<110) begin
-                            DC_Comp = DC_Comp - 7'b1;
-                            // next_state = DC_RED;
+                        if (average<120) begin
+                            // DC_Comp = DC_Comp - 7'b1;
+                            DC_Comp = DC_Comp - DC_Comp/2;
+                            // DC_Comp = DC_Comp - ((120-average)>>1);
                         end
                             
-                        else if (average>145) begin
-                            DC_Comp = DC_Comp + 7'b1;
-                            // next_state = DC_RED;
+                        else if (average>135) begin
+                            // DC_Comp = DC_Comp + 7'b1;
+                            DC_Comp = DC_Comp + DC_Comp/2;
+                            // DC_Comp = DC_Comp + ((135-average)>>1);
                         end
                             
                         else begin
@@ -125,7 +127,8 @@ module Controller (
                             RED_DC_Comp = DC_Comp;
                             V_max = 0;
                             V_min = 255;
-                            DC_Comp = 0;
+                            //DC_Comp = 0;
+                            PGA_Gain = 4'd0;
                         end
                     end
                     // if ( ADC < V_min) begin
@@ -142,7 +145,7 @@ module Controller (
                     // average = (V_max + V_min) >> 1;     
                     
                     
-                end                           
+                  end                           
                 
 
                 PGA_RED: begin  // PGA Gain for RED 
@@ -155,17 +158,18 @@ module Controller (
                     else begin
                         i=0;
                         if (10<V_min && V_max<245) begin
-                            PGA_Gain = PGA_Gain + 4'b1;
+                            PGA_Gain = PGA_Gain + 4'd2;
                             // next_state = PGA_RED;
                         end
                         
                         if (V_min<10 || V_max>245 || PGA_Gain == 4'd15 ) begin  //cutoff happend, max_pga_gain 
                             next_state = DC_IR;
                             @ (negedge CLK);
-                            RED_PGA = PGA_Gain-1; 
+                            RED_PGA = PGA_Gain-2; 
                             PGA_Gain = 4'd0; //initial pgagain
                             V_max = 0;
                             V_min = 255;
+			    
                         end
                     end   
                 end
@@ -184,11 +188,15 @@ module Controller (
                         adc_sum = 13'b0;
                     
                         if (average<120) begin
-                            DC_Comp = DC_Comp - 7'b1;  
+                            // DC_Comp = DC_Comp - 7'b1; 
+                            DC_Comp = DC_Comp - DC_Comp/2;
+                            // DC_Comp = DC_Comp - ((120-average)>>1); 
                         end
                             
-                        else if (average>130) begin
-                            DC_Comp = DC_Comp + 7'b1;    
+                        else if (average>135) begin
+                            // DC_Comp = DC_Comp + 7'b1; 
+                            DC_Comp = DC_Comp + DC_Comp/2; 
+                            // DC_Comp = DC_Comp + ((135-average)>>1);  
                         end
                     
                         else begin  
@@ -197,7 +205,8 @@ module Controller (
                             IR_DC_Comp = DC_Comp;
                             V_max = 0;
                             V_min = 255;
-                            DC_Comp = 0;
+                            // DC_Comp = 0;
+                            PGA_Gain = 4'd0;
                         end
                     end
                 end 
@@ -212,7 +221,7 @@ module Controller (
                     else begin
                         i=0;
                         if (10<V_min && V_max<245) begin
-                            PGA_Gain = PGA_Gain + 4'b1;
+                            PGA_Gain = PGA_Gain + 4'd2;
                             // next_state = PGA_RED;
                         end
                         
@@ -222,7 +231,7 @@ module Controller (
                             V_max = 0;
                             V_min = 255;
 
-                            IR_PGA = PGA_Gain-1; 
+                            IR_PGA = PGA_Gain-2; 
                             PGA_Gain = 4'd0; //initial pgagain
                             
                         end
