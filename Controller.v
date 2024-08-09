@@ -77,7 +77,7 @@ module Controller (
                     @(negedge CLK)
                     CLK_Filter = 1'b0;
                     LED_DRIVE = 4'd10;  // fixed now, TODO later
-                    DC_Comp = 7'd44;	// start somewhere
+                    DC_Comp = 7'd50;	// start somewhere
                     LED_IR = 1'b0;
                     LED_RED = 1'b0;
                     PGA_Gain = 4'd0;
@@ -100,11 +100,13 @@ module Controller (
                 end
 
                 DC_RED: begin // DC comb for RED 
-
+                    
                     LED_RED = 1'b1;
                     LED_IR = 1'b0;
 
+
                     if (i<26) begin
+                        @ (negedge CLK); 
                         adc_sum = adc_sum + ADC;
                         i=i+1;
                     end
@@ -112,6 +114,7 @@ module Controller (
                         i=0;
                         average = adc_sum / 27;
                         adc_sum = 13'b0;
+
                         if (average<120) begin
                             // DC_Comp = DC_Comp - 7'b1;
                             DC_Comp = DC_Comp - DC_Comp/2;
@@ -136,6 +139,8 @@ module Controller (
                             PGA_Gain = 4'd7;
                         end
                     end
+
+                    
                     // if ( ADC < V_min) begin
                     //     V_min = ADC;
                         
@@ -226,7 +231,7 @@ module Controller (
                         end
                         
                         if (V_min<10 || V_max>245 ) begin  
-                            IR_PGA = PGA_Gain - 4'b1;
+                            PGA_Gain = PGA_Gain - 4'b1;
                             V_max = 0;
                             V_min = 255; 
                         end
@@ -376,7 +381,7 @@ module Controller (
                         
                         if (V_min<10 || V_max>245 ) begin
                             @ (negedge CLK);  
-                            IR_PGA = PGA_Gain - 4'b1;
+                            PGA_Gain = PGA_Gain - 4'b1;
                             V_max = 0;
                             V_min = 255; 
                         end
