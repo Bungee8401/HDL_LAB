@@ -32,7 +32,7 @@ module Controller (
     reg [8:0] average;
 
     reg [7:0] i;
-    reg [7:0] j;
+    //reg [7:0] j;
     reg [3:0] timer;
     reg [12:0] adc_sum;
 
@@ -43,6 +43,10 @@ module Controller (
     parameter PGA_IR    = 8'b0000_1000;
     parameter OPERATION = 8'b0001_0000;
 
+    parameter PGA_DC_IN = 8'b0001_0001;
+    parameter PGA_DC_OUT = 8'b0001_0011;
+    parameter PGA_RED_IN = 8'b0001_0100;
+    parameter PGA_RED_OUT = 8'b0001_0101;
 
     //clk_filter
     always @(posedge CLK) begin
@@ -63,8 +67,25 @@ module Controller (
         end
     end
 
-
-
+     task calculate_min_max;
+        input [7:0] ADC;
+        output [7:0] V_max;
+        output [7:0] V_min;
+        integer k;
+         begin
+            V_max = 0;
+            V_min = 255;
+            for (k = 0; k < 10; k = k + 1) begin
+                if (ADC < V_min) begin
+                    V_min = ADC;
+                else if(ADC > V_max) begin
+                    V_max = ADC;
+                end
+                end
+            end       
+        end
+     endtask
+        
     // FSM state transition  TODO: LED_DRIVE is fixed here. shouldnt be this case in cadence.   
     always @(*) begin 
             case(current_state) 
@@ -80,7 +101,7 @@ module Controller (
                     adc_sum = 13'b0;    
 
                     RED_DC_Comp = 7'b0;
-                    IR_DC_Comp = 7'b1;
+                    IR_DC_Comp = 7'b0;
                     RED_PGA = 4'b0;
                     IR_PGA = 4'b0;
 
@@ -92,7 +113,7 @@ module Controller (
                     i = 0;
                     timer = 0;
 
-                    next_state = DC_RED;
+                    next_state = DC_RED; //next_state = DC_RED;
                 end
 
                 DC_RED: begin // DC comb for RED 
@@ -148,8 +169,9 @@ module Controller (
                   end                           
                 
 
-                PGA_RED: begin  // PGA Gain for RED 
-                
+
+                PGA_RED: begin
+
                     if (i<26) begin
                         V_min = (ADC < V_min) ? ADC : V_min;
                         V_max = (ADC > V_max) ? ADC : V_max;
@@ -158,21 +180,115 @@ module Controller (
                     else begin
                         i=0;
                         if (10<V_min && V_max<245) begin
+<<<<<<< HEAD
+                            V_max = 0;
+                            V_min = 255; 
+                            PGA_Gain = PGA_Gain + 4'b1;
+                            next_state = PGA_RED_IN;
+                            
+=======
                             PGA_Gain = PGA_Gain + 4'd2;
                             // next_state = PGA_RED;
+>>>>>>> 8cab80f533586ddbf2d9034bf22a642be9399308
                         end
                         
+<<<<<<< HEAD
+                        if (V_min<10 || V_max>245 ) begin  
+=======
                         if (V_min<10 || V_max>245 || PGA_Gain == 4'd15 ) begin  //cutoff happend, max_pga_gain 
                             next_state = DC_IR;
                             @ (negedge CLK);
                             RED_PGA = PGA_Gain-2; 
                             PGA_Gain = 4'd0; //initial pgagain
+>>>>>>> 8cab80f533586ddbf2d9034bf22a642be9399308
                             V_max = 0;
+<<<<<<< HEAD
+                            V_min = 255; 
+                            PGA_Gain = PGA_Gain - 4'b1;
+                            next_state = PGA_RED_OUT;
+                                                
+=======
                             V_min = 255;
 			    
+>>>>>>> 8cab80f533586ddbf2d9034bf22a642be9399308
                         end
                     end   
                 end
+
+                PGA_RED_IN: begin
+                        if (i<26) begin
+                        V_min = (ADC < V_min) ? ADC : V_min;
+                        V_max = (ADC > V_max) ? ADC : V_max;
+                        i=i+1;
+                    end
+                    else begin
+                        i=0;
+                        if (10<V_min && V_max<245) begin
+                            PGA_Gain = PGA_Gain + 4'b1;
+                            V_max = 0;
+                            V_min = 255;
+                        end
+                        
+                        if (V_min<10 || V_max>245 ) begin  
+                            RED_PGA = PGA_Gain - 4'b1;
+                            PGA_Gain = 0;
+                            V_max = 0;
+                            V_min = 255; 
+                            next_state = DC_IR;
+                        end
+                end
+                end
+
+                
+                PGA_RED_OUT: begin
+                        if (i<26) begin
+                        V_min = (ADC < V_min) ? ADC : V_min;
+                        V_max = (ADC > V_max) ? ADC : V_max;
+                        i=i+1;
+                    end
+                    else begin
+                        i=0;
+                        if (10<V_min && V_max<245) begin
+                            RED_PGA = PGA_Gain + 4'b1;
+                            PGA_Gain = 0;
+                            V_max = 0;
+                            V_min = 255; 
+                            next_state = DC_IR;
+                        end
+                        
+                        if (V_min<10 || V_max>245 ) begin  
+                            IR_PGA = PGA_Gain - 4'b1;
+                            V_max = 0;
+                            V_min = 255; 
+                        end
+                end
+                end
+
+                // PGA_RED: begin  // PGA Gain for RED 
+                
+                //     if (i<26) begin
+                //         V_min = (ADC < V_min) ? ADC : V_min;
+                //         V_max = (ADC > V_max) ? ADC : V_max;
+                //         i=i+1;
+                //     end
+                //     else begin
+                //         i=0;
+                //         if (10<V_min && V_max<245) begin
+                //             PGA_Gain = PGA_Gain + 4'd2;
+                //             // next_state = PGA_RED;
+                //         end
+                        
+                //         if (V_min<10 || V_max>245 || PGA_Gain == 4'd15 ) begin  //cutoff happend, max_pga_gain 
+                //             next_state = DC_IR;
+                //             @ (negedge CLK);
+                //             RED_PGA = PGA_Gain-2; 
+                //             PGA_Gain = 4'd0; //initial pgagain
+                //             V_max = 0;
+                //             V_min = 255;
+			    
+                //         end
+                //     end   
+                // end
 
                 DC_IR: begin // DC comb for IR 
                     LED_RED = 1'b0;
@@ -221,32 +337,112 @@ module Controller (
                     else begin
                         i=0;
                         if (10<V_min && V_max<245) begin
-                            PGA_Gain = PGA_Gain + 4'd2;
-                            // next_state = PGA_RED;
+                            V_max = 0;
+                            V_min = 255; 
+                            PGA_Gain = PGA_Gain + 4'b1;
+                            next_state = PGA_IR_IN;
+                            
                         end
                         
-                        if (V_min<10 || V_max>245 || PGA_Gain == 4'd15 ) begin   
-                            next_state = OPERATION;
-                            @ (negedge CLK);
+                        if (V_min<10 || V_max>245 ) begin  
                             V_max = 0;
-                            V_min = 255;
-
-                            IR_PGA = PGA_Gain-2; 
-                            PGA_Gain = 4'd0; //initial pgagain
-                            
+                            V_min = 255; 
+                            PGA_Gain = PGA_Gain - 4'b1;
+                            next_state = PGA_IR_OUT;
+                                                
                         end
                     end   
                 end
+
+                PGA_IR_IN: begin
+                        if (i<26) begin
+                        V_min = (ADC < V_min) ? ADC : V_min;
+                        V_max = (ADC > V_max) ? ADC : V_max;
+                        i=i+1;
+                    end
+                    else begin
+                        i=0;
+                        if (10<V_min && V_max<245) begin
+                            PGA_Gain = PGA_Gain + 4'b1;
+                            V_max = 0;
+                            V_min = 255;
+                        end
+                        
+                        if (V_min<10 || V_max>245 ) begin  
+                            IR_PGA = PGA_Gain - 4'b1;
+                            PGA_Gain = 0;
+                            V_max = 0;
+                            V_min = 255; 
+                            next_state = OPERATION;
+                        end
+                end
+                end
+
+                
+                PGA_IR_OUT: begin
+                        if (i<26) begin
+                        V_min = (ADC < V_min) ? ADC : V_min;
+                        V_max = (ADC > V_max) ? ADC : V_max;
+                        i=i+1;
+                    end
+                    else begin
+                        i=0;
+                        if (10<V_min && V_max<245) begin
+                            IR_PGA = PGA_Gain + 4'b1;
+                            PGA_Gain = 0;
+                            V_max = 0;
+                            V_min = 255; 
+                            next_state = OPERATION;
+                        end
+                        
+                        if (V_min<10 || V_max>245 ) begin  
+                            IR_PGA = PGA_Gain - 4'b1;
+                            V_max = 0;
+                            V_min = 255; 
+                        end
+                end
+                end
+
+
+
+
+                // PGA_IR: begin
+
+                //     if (i<26) begin
+                //         V_min = (ADC < V_min) ? ADC : V_min;
+                //         V_max = (ADC > V_max) ? ADC : V_max;
+                //         i=i+1;
+                //     end
+                //     else begin
+                //         i=0;
+                //         if (10<V_min && V_max<245) begin
+                //             PGA_Gain = PGA_Gain + 4'd2;
+                //             // next_state = PGA_RED;
+                //         end
+                        
+                //         if (V_min<10 || V_max>245 || PGA_Gain == 4'd15 ) begin   
+                //             next_state = OPERATION;
+                //             @ (negedge CLK);
+                //             V_max = 0;
+                //             V_min = 255;
+
+                //             IR_PGA = PGA_Gain-2; 
+                //             PGA_Gain = 4'd0; //initial pgagain
+                            
+                //         end
+                //     end   
+                // end
 		
 
 		        OPERATION: begin
 		            Find_setting_Complete  = 1'b1;      // flag signal for LED switching block
 		        end
 
-                default:    next_state = INITIAL ;
+                default:    current_state = INITIAL ;
                 
             endcase
-    end
+        end
+    //end
 
     always @(posedge CLK) begin  
         if(Find_setting_Complete) begin // setting found, switch faster -> 100Hz, 10ms       
@@ -273,23 +469,6 @@ module Controller (
     end
 endmodule
 
-  /*  task find_average (input ADC, input CLK,
-            output average);
-            always @(posedge CLK) begin
-                wait (!dcReady);
-                while (i<10) begin  //10ms
-                    i = i + 1;
-                   if (ADC < V_min) begin
-                    V_min = ADC;
-                    else if(ADC > V_max) begin
-                        V_max = ADC;
-                        end
-                    end
-                    average = (V_max + V_min) >> 1;
-                end
-                if (i > 10) begin
-                    averageReady = 1;
-                end
-            end */
+
 
             
