@@ -227,13 +227,13 @@ module Controller_small (
                     i=0;
                     average <= (V_max + V_min) /2; 
                     if (average<120) begin
-                        DC_Comp = DC_Comp - 7'b5; 
+                        DC_Comp = DC_Comp - 7'd5; 
                         //DC_Comp <= DC_Comp - DC_Comp/2;
                         // DC_Comp = DC_Comp - ((120-average)>>1); 
                     end
                         
                     else if (average>135) begin
-                        DC_Comp = DC_Comp + 7'b1; 
+                        DC_Comp = DC_Comp + 7'd1; 
                         // DC_Comp <= DC_Comp + DC_Comp/2; 
                         // DC_Comp = DC_Comp + ((135-average)>>1);  
                     end
