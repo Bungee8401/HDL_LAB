@@ -54,7 +54,7 @@ module Controller_small (
     end    
 
 
-    // FSM state ffs    
+    // FSM state transition at positive CLK 
     always @(posedge CLK or negedge rst_n) begin
         if (~rst_n) begin
             current_state <= INITIAL;
@@ -67,6 +67,7 @@ module Controller_small (
         end
     end
 
+    // assign values at neg CLK 
     always @(negedge CLK) begin
         case(current_state) 
             
@@ -74,7 +75,7 @@ module Controller_small (
                 //@(negedge CLK)
                 CLK_Filter <= 1'b0;
                 LED_DRIVE <= 4'd10;  // fixed now, TODO later
-                DC_Comp <= 7'd110;	// start somewhere
+                DC_Comp <= 7'd127;	// start somewhere
                 LED_IR <= 1'b0;
                 LED_RED <= 1'b0;
                 PGA_Gain <= 4'd0;
@@ -101,25 +102,24 @@ module Controller_small (
                 LED_RED <= 1'b1;
                 LED_IR <= 1'b0;
 
-
                 if (i<1000) begin
                     //@ (negedge CLK); 
                     V_max <= (ADC > V_max)?  ADC:V_max;
                     V_min <= (ADC < V_min)?  ADC:V_min;
                     
-                    i<=i+1;
+                    i=i+1;
                 end
                 else begin
                     i<=0;
                     average <= (V_max + V_min) /2; 
                     if (average<120) begin
-                        DC_Comp = DC_Comp - 7'b1;
+                        DC_Comp = DC_Comp - 7'd5;
                         // DC_Comp <= DC_Comp - DC_Comp/2;
                         // DC_Comp = DC_Comp - ((120-average)>>1);
                     end
                         
                     else if (average>135) begin
-                        DC_Comp = DC_Comp + 7'b1;
+                        DC_Comp = DC_Comp + 7'd1;
                         // DC_Comp <= DC_Comp + DC_Comp/2;
                         // DC_Comp = DC_Comp + ((135-average)>>1);
                     end
@@ -186,7 +186,6 @@ module Controller_small (
                         end
                 end
             end
-
                 
             PGA_RED_OUT: begin
                         if (i<1000) begin
@@ -228,7 +227,7 @@ module Controller_small (
                     i=0;
                     average <= (V_max + V_min) /2; 
                     if (average<120) begin
-                        DC_Comp = DC_Comp - 7'b1; 
+                        DC_Comp = DC_Comp - 7'b5; 
                         //DC_Comp <= DC_Comp - DC_Comp/2;
                         // DC_Comp = DC_Comp - ((120-average)>>1); 
                     end
@@ -241,7 +240,7 @@ module Controller_small (
                 
                     else begin  
                         next_state <= PGA_IR;
-                        @ (negedge CLK);
+                        // @ (negedge CLK);
                         IR_DC_Comp <= DC_Comp;
                         V_max <= 0;
                         V_min <= 255;
@@ -294,7 +293,7 @@ module Controller_small (
                         if (V_min<10 || V_max>245 ) begin  
                             
                             next_state <= OPERATION;
-                            @ (negedge CLK);
+                            // @ (negedge CLK);
                             IR_PGA <= PGA_Gain - 4'b1;
                             PGA_Gain <= 0;
                             V_max <= 0;
@@ -314,7 +313,7 @@ module Controller_small (
                         i=0;
                         if (10<V_min && V_max<245) begin
                             next_state <= OPERATION;
-                            @ (negedge CLK);
+                            // @ (negedge CLK);
                             IR_PGA <= PGA_Gain;
                             PGA_Gain <= 0;
                             V_max <= 0;
@@ -330,11 +329,11 @@ module Controller_small (
             end
 
             OPERATION: begin
-		            Find_setting_Complete  = 1'b1;      // flag signal for LED switching block
+		        Find_setting_Complete  = 1'b1;      // flag signal for LED switching block
 		    end
 
             default:    current_state <= INITIAL ;
-            
+
         endcase
     end
 
