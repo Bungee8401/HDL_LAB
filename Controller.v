@@ -36,17 +36,17 @@ module Controller (
     reg [3:0] timer;
     reg [12:0] adc_sum;
 
-    parameter INITIAL   = 8'b1000_0000;
-    parameter DC_RED    = 8'b0000_0001;
-    parameter PGA_RED   = 8'b0000_0010;
-    parameter DC_IR     = 8'b0000_0100;
-    parameter PGA_IR    = 8'b0000_1000;
-    parameter OPERATION = 8'b0001_0000;
+    parameter INITIAL   = 8'b1000_0000; //
+    parameter DC_RED    = 8'b0000_0001; //1
+    parameter PGA_RED   = 8'b0000_0010; //2
+    parameter DC_IR     = 8'b0000_0100;//4
+    parameter PGA_IR    = 8'b0000_1000;//8
+    parameter OPERATION = 8'b0001_0000;//16
 
-    parameter PGA_RED_IN = 8'b0001_0001;
-    parameter PGA_RED_OUT = 8'b0001_0011;
-    parameter PGA_IR_IN = 8'b0001_0100;
-    parameter PGA_IR_OUT = 8'b0001_0101;
+    parameter PGA_RED_IN = 8'b0001_0001;//17
+    parameter PGA_RED_OUT = 8'b0001_0011;//19
+    parameter PGA_IR_IN = 8'b0001_0100;//20
+    parameter PGA_IR_OUT = 8'b0001_0101;//21
 
     //clk_filter
     always @(posedge CLK) begin
@@ -169,19 +169,21 @@ module Controller (
                     else begin
                         i=0;
                         if (10<V_min && V_max<245) begin
+                            next_state = PGA_RED_IN;
+                            @ (negedge CLK);
                             V_max = 0;
                             V_min = 255; 
                             PGA_Gain = PGA_Gain + 4'b1;
-                            next_state = PGA_RED_IN;
+                            
                             
                         end
                         
-                        if (V_min<10 || V_max>245 ) begin  
+                        if (V_min<10 || V_max>245 ) begin                              
+                            next_state = PGA_RED_OUT;
+                            @ (negedge CLK);
                             V_max = 0;
                             V_min = 255; 
-                            PGA_Gain = PGA_Gain - 4'b1;
-                            next_state = PGA_RED_OUT;
-                                                
+                            PGA_Gain = PGA_Gain - 4'b1;                    
                         end
                     end   
                 end
@@ -195,6 +197,7 @@ module Controller (
                     else begin
                         i=0;
                         if (10<V_min && V_max<245) begin
+                            @ (negedge CLK);
                             PGA_Gain = PGA_Gain + 4'b1;
                             V_max = 0;
                             V_min = 255;
@@ -231,6 +234,7 @@ module Controller (
                         end
                         
                         if (V_min<10 || V_max>245 ) begin  
+                            @ (negedge CLK);
                             PGA_Gain = PGA_Gain - 4'b1;
                             V_max = 0;
                             V_min = 255; 
