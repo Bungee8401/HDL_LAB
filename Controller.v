@@ -213,11 +213,12 @@ module Controller (
                         end
                         
                         if (V_min<10 || V_max>245 ) begin  
+                            @ (negedge CLK);
+                            next_state = DC_IR;
                             RED_PGA = PGA_Gain - 4'b1;
                             PGA_Gain = 0;
                             V_max = 0;
-                            V_min = 255; 
-                            next_state = DC_IR;
+                            V_min = 255;
                         end
                 end
                 end
@@ -232,11 +233,12 @@ module Controller (
                     else begin
                         i=0;
                         if (10<V_min && V_max<245) begin
+                            next_state = DC_IR;
+                            @ (negedge CLK);
                             RED_PGA = PGA_Gain + 4'b1;
                             PGA_Gain = 0;
                             V_max = 0;
-                            V_min = 255; 
-                            next_state = DC_IR;
+                            V_min = 255;                       
                         end
                         
                         if (V_min<10 || V_max>245 ) begin  
