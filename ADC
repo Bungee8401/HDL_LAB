@@ -1,15 +1,48 @@
+`include “disciplines.vams”
+`include “constants.vams”
+
+module ideal_adc(in,clk,out);
+input in,clk;
+output [0:adc_size-1] out;
+voltage in,clk,out;
+parameter integer adc_size = 8 from [1:inf);
+parameter real fullscale = 1.0;
+parameter real delay_ = 0, trise = 10n, tfall = 10n;
+parameter real clk_vth = 2.5;
+parameter real out_high = 1, out_low = 0 from (-inf:out_high);
+real sample,thresh;
+real result[0:adc_size-1];
+integer i;
 
 analog begin
   @(cross(V(clk)-clk_vth, +1)) begin
     sample = V(in);
-    for(i=7;i>=0;i=i-1) begin
-    if (sample > 0.9) begin
-      result[i] = out_high;
-      sample = sample-0.9;
+    thresh = fullscale/2;
+    for(i=adc_size-1;i>=0;i=i-1) begin
+      if (sample > thresh) begin
+        result[i] = out_high;
+        sample = sample - thresh;
+      end
+      else 
+        result[i] = out_low;
+      sample = 2*sample;
     end
-    else begin
-      result[i] = out_low;
-    end
-    sample = 2*sample;
   end
+  V(out) <+ transition(result,delay_,trise,tfall);
 end
+endmodule
+
+// analog begin
+//   @(cross(V(clk)-clk_vth, +1)) begin
+//     sample = V(in);
+//     for(i=7;i>=0;i=i-1) begin
+//     if (sample > 0.9) begin
+//       result[i] = out_high;
+//       sample = sample-0.9;
+//     end
+//     else begin
+//       result[i] = out_low;
+//     end
+//     sample = 2*sample;
+//   end
+// end
