@@ -6,9 +6,9 @@ input in,clk;
 output [0:adc_size-1] out;
 voltage in,clk,out;
 parameter integer adc_size = 8 from [1:inf);
-parameter real fullscale = 1.0;
-parameter real delay_ = 0, trise = 10n, tfall = 10n;
-parameter real clk_vth = 2.5;
+parameter real fullscale = 1.8; //was 1 
+parameter real delay_ = 0, trise = 10n, tfall = 10n;  // trise needs to change ???
+parameter real clk_vth = 2.5; // ??? uncertain, needs to look at clk voltage in cadnece
 parameter real out_high = 1, out_low = 0 from (-inf:out_high);
 real sample,thresh;
 real result[0:adc_size-1];
