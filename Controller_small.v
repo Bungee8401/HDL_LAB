@@ -107,19 +107,19 @@ module Controller_small (
                     V_max <= (ADC > V_max)?  ADC:V_max;
                     V_min <= (ADC < V_min)?  ADC:V_min;
                     
-                    i=i+1;
+                    i<=i+1;
                 end
                 else begin
                     i<=0;
                     average <= (V_max + V_min) >>1; 
                     if (average<120) begin
-                        DC_Comp = DC_Comp - 7'd5;
+                        DC_Comp <= DC_Comp - 7'd5;
                         // DC_Comp <= DC_Comp - DC_Comp/2;
                         // DC_Comp = DC_Comp - ((120-average)>>1);
                     end
                         
                     else if (average>135) begin
-                        DC_Comp = DC_Comp + 7'd1;
+                        DC_Comp <= DC_Comp + 7'd1;
                         // DC_Comp <= DC_Comp + DC_Comp/2;
                         // DC_Comp = DC_Comp + ((135-average)>>1);
                     end
@@ -137,28 +137,28 @@ module Controller_small (
             end 
 
             PGA_RED: begin
-                    if (i<1000) begin
-                        V_min <= (ADC < V_min) ? ADC : V_min;
-                        V_max <= (ADC > V_max) ? ADC : V_max;
-                        i<=i+1;
+                if (i<1000) begin
+                    V_min <= (ADC < V_min) ? ADC : V_min;
+                    V_max <= (ADC > V_max) ? ADC : V_max;
+                    i<=i+1;
+                end
+                else begin
+                    i=0;
+                    if (10<V_min && V_max<245) begin
+                        V_max <= 0;
+                        V_min <= 255; 
+                        PGA_Gain <= PGA_Gain + 4'b1;
+                        next_state <= PGA_RED_IN;                            
                     end
-                    else begin
-                        i=0;
-                        if (10<V_min && V_max<245) begin
-                            V_max <= 0;
-                            V_min <= 255; 
-                            PGA_Gain <= PGA_Gain + 4'b1;
-                            next_state <= PGA_RED_IN;                            
-                        end
-                        
-                        if (V_min<10 || V_max>245 ) begin  
-                            V_max <= 0;
-                            V_min <= 255; 
-                            PGA_Gain <= PGA_Gain - 4'b1;
-                            next_state <= PGA_RED_OUT;
-                                                
-                        end
-                    end   
+                    
+                    if (V_min<10 || V_max>245 ) begin  
+                        V_max <= 0;
+                        V_min <= 255; 
+                        PGA_Gain <= PGA_Gain - 4'b1;
+                        next_state <= PGA_RED_OUT;
+                                            
+                    end
+                end   
             end
 
             PGA_RED_IN: begin
@@ -178,7 +178,7 @@ module Controller_small (
                         if (V_min<10 || V_max>245 ) begin  
                             
                             next_state <= DC_IR;
-                            @ (negedge CLK);
+                            //@ (negedge CLK);
                             RED_PGA <= PGA_Gain - 4'b1;
                             PGA_Gain <= 0;
                             V_max <= 0;
@@ -188,27 +188,27 @@ module Controller_small (
             end
                 
             PGA_RED_OUT: begin
-                        if (i<1000) begin
-                        V_min <= (ADC < V_min) ? ADC : V_min;
-                        V_max <= (ADC > V_max) ? ADC : V_max;
-                        i<=i+1;
+                if (i<1000) begin
+                    V_min <= (ADC < V_min) ? ADC : V_min;
+                    V_max <= (ADC > V_max) ? ADC : V_max;
+                    i<=i+1;
+                end
+                else begin
+                    i=0;
+                    if (10<V_min && V_max<245) begin
+                        next_state <= DC_IR;
+                        //@ (negedge CLK);
+                        RED_PGA <= PGA_Gain;
+                        PGA_Gain <= 0;
+                        V_max <= 0;
+                        V_min <= 255;                       
                     end
-                    else begin
-                        i=0;
-                        if (10<V_min && V_max<245) begin
-                            next_state <= DC_IR;
-                            @ (negedge CLK);
-                            RED_PGA <= PGA_Gain;
-                            PGA_Gain <= 0;
-                            V_max <= 0;
-                            V_min <= 255;                       
-                        end
-                        
-                        if (V_min<10 || V_max>245 ) begin  
-                            PGA_Gain <= PGA_Gain - 4'b1;
-                            V_max <= 0;
-                            V_min <= 255; 
-                        end
+                    
+                    if (V_min<10 || V_max>245 ) begin  
+                        PGA_Gain <= PGA_Gain - 4'b1;
+                        V_max <= 0;
+                        V_min <= 255; 
+                    end
                 end
             end                          
 
@@ -224,16 +224,16 @@ module Controller_small (
                     i<=i+1;
                 end
                 else begin
-                    i=0;
+                    i<=0;
                     average <= (V_max + V_min) >>1; 
                     if (average<120) begin
-                        DC_Comp = DC_Comp - 7'd5; 
+                        DC_Comp <= DC_Comp - 7'd5; 
                         //DC_Comp <= DC_Comp - DC_Comp/2;
                         // DC_Comp = DC_Comp - ((120-average)>>1); 
                     end
                         
                     else if (average>135) begin
-                        DC_Comp = DC_Comp + 7'd1; 
+                        DC_Comp <= DC_Comp + 7'd1; 
                         // DC_Comp <= DC_Comp + DC_Comp/2; 
                         // DC_Comp = DC_Comp + ((135-average)>>1);  
                     end
@@ -255,7 +255,7 @@ module Controller_small (
                      if (i<1000) begin
                         V_min <= (ADC < V_min) ? ADC : V_min;
                         V_max <= (ADC > V_max) ? ADC : V_max;
-                        i<=i+1;
+                        i <= i+1;
                     end
                     else begin
                         i=0;
@@ -280,7 +280,7 @@ module Controller_small (
                         if (i<1000) begin
                         V_min <= (ADC < V_min) ? ADC : V_min;
                         V_max <= (ADC > V_max) ? ADC : V_max;
-                        i<=i+1;
+                        i <= i+1;
                     end
                     else begin
                         i=0;
@@ -307,10 +307,10 @@ module Controller_small (
                         if (i<1000) begin
                         V_min <= (ADC < V_min) ? ADC : V_min;
                         V_max <= (ADC > V_max) ? ADC : V_max;
-                        i<=i+1;
+                        i <= i+1;
                     end
                     else begin
-                        i=0;
+                        i<=0;
                         if (10<V_min && V_max<245) begin
                             next_state <= OPERATION;
                             // @ (negedge CLK);
