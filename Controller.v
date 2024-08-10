@@ -74,7 +74,7 @@ module Controller (
             case(current_state) 
                 
                 INITIAL: begin              
-                    @(negedge CLK)
+                    //@(negedge CLK)
                     CLK_Filter = 1'b0;
                     LED_DRIVE = 4'd10;  // fixed now, TODO later
                     DC_Comp = 7'd50;	// start somewhere

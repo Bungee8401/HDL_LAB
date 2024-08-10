@@ -1,5 +1,35 @@
 `timescale 1ms/1ms;
 
+    // always @(posedge CLK) begin  
+    //     if(Find_setting_Complete) begin // setting found, switch faster -> 100Hz, 10ms       
+    //         if(timer == 9) begin
+    //             timer <= 0;
+    //             LED_RED <= ~LED_RED;
+    //             LED_IR <= ~LED_IR;
+    //         end else begin
+    //             timer <= timer + 1;       
+    //             if (LED_RED == 1 && LED_IR == 0) begin
+    //                 RED_ADC_Value <= ADC;
+    //                 PGA_Gain <= RED_PGA;
+    //                 DC_Comp <= RED_DC_Comp;
+    //             end 
+
+    //             if (LED_RED == 0 && LED_IR == 1) begin
+    //                 IR_ADC_Value <= ADC;
+    //                 PGA_Gain <= IR_PGA;
+    //                 DC_Comp <= IR_DC_Comp;           
+    //             end
+    //         end
+    //     end
+        
+    // end
+// 不要在意，写给自己看状态时序的，后续会删
+
+
+
+
+
+
 module FIR_IR ( 
 	input CLK_Filter,
 	input rst_n,
