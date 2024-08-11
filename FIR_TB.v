@@ -3,7 +3,7 @@
 module FIR_TB ();
 	localparam half_cycle = 1;
     reg CLK_Filter;
-    reg [7:0] ADC_Value;
+    reg [7:0] IR_ADC_Value;
     reg rst_n;
 
     wire [19:0] Out_Filtered;
@@ -14,7 +14,7 @@ module FIR_TB ();
 
     FIR_IR ins1 (
         .CLK_Filter     (CLK_Filter),
-        .IR_ADC_Value   (ADC_Value),
+        .IR_ADC_Value   (IR_ADC_Value),
         .rst_n          (rst_n),
 
         .Out_IR_Filtered    (Out_Filtered)
