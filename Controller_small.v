@@ -117,7 +117,7 @@ module Controller_small (
                     average <= (V_max + V_min) >>1; 
                     if (average<120) begin
                         // DC_Comp <= DC_Comp - 7'd5;
-                        DC_Comp <= DC_Comp - DC_Comp/2;
+                        DC_Comp <= DC_Comp - DC_Comp>>2;
                         // DC_Comp = DC_Comp - ((120-average)>>1);
 
                         V_max <= 0;
@@ -126,7 +126,7 @@ module Controller_small (
                         
                     else if (average>135) begin
                         // DC_Comp <= DC_Comp + 7'd1;
-                        DC_Comp <= DC_Comp + DC_Comp/2;
+                        DC_Comp <= DC_Comp + DC_Comp>>2;
                         // DC_Comp = DC_Comp + ((135-average)>>1);
 
                         V_max <= 0;
@@ -156,7 +156,7 @@ module Controller_small (
                         if (10<V_min && V_max<245) begin
                             V_max <= 0;
                             V_min <= 255; 
-                            PGA_Gain <= PGA_Gain + 4'b1;
+                            PGA_Gain <= PGA_Gain + 4'd1;
                             next_state <= PGA_RED;                            
                         end
                         
@@ -164,7 +164,7 @@ module Controller_small (
                             V_max <= 0;
                             V_min <= 255; 
                             // PGA_Gain <= PGA_Gain - 4'b1;
-                            RED_PGA <= PGA_Gain - 4'b1;
+                            RED_PGA <= PGA_Gain - 4'd1;
                             // next_state <= PGA_RED_OUT;
                             next_state <= DC_IR;
                             PGA_Gain <= 4'd0;
@@ -243,7 +243,7 @@ module Controller_small (
                     average <= (V_max + V_min) >>1; 
                     if (average<120) begin
                         //DC_Comp <= DC_Comp - 7'd5; 
-                        DC_Comp <= DC_Comp - DC_Comp/2;
+                        DC_Comp <= DC_Comp - DC_Comp>>2;
                         // DC_Comp = DC_Comp - ((120-average)>>1); 
 
                         V_max <= 0;
@@ -253,7 +253,7 @@ module Controller_small (
                         
                     else if (average>135) begin
                         //DC_Comp <= DC_Comp + 7'd1; 
-                        DC_Comp <= DC_Comp + DC_Comp/2; 
+                        DC_Comp <= DC_Comp + DC_Comp>>2; 
                         // DC_Comp = DC_Comp + ((135-average)>>1);  
 
                         V_max <= 0;
