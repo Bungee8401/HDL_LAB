@@ -76,7 +76,7 @@ endmodule
 // VerilogA for cad4soc, cad4socQuantizer, veriloga
 `include "constants.vams"
 `include "disciplines.vams"
-module cad4socQuantizer(AGND, D0, D1, D2, D3, vIn);
+module cad4socQuantizer(AGND, D0, D1, D2, D3, D4, D5, D6, D7, vIn);
 inout AGND;
 electrical AGND;
 inout D0;
@@ -87,16 +87,24 @@ inout D2;
 electrical D2;
 inout D3;
 electrical D3;
+inout D4;
+electrical D4;
+inout D5;
+electrical D5;
+inout D6;
+electrical D6;
+inout D7;
+electrical D7;
 inout vIn;
 electrical vIn;
 // end of automatically generated header
 // the logic levels are 0 to 3.3. V
 parameter real vLow = 0 from [0:inf];
-parameter real vHigh = 3.3 from [0:inf];
+parameter real vHigh = 1.8 from [0:inf];
 // the reference voltage is 3.3. V
 parameter real vRefL = 0 from [0:inf];
-parameter real vRefH = 3.3 from [0:inf];
-localparam integer levels = 16;
+parameter real vRefH = 1.8 from [0:inf];
+localparam integer levels = 256;
 integer result;
 analog begin
 // the output value is calculated arithmetically
@@ -111,6 +119,10 @@ V(D0) <+ (result & 1) ? vHigh : vLow;
 V(D1) <+ (result & 2) ? vHigh : vLow;
 V(D2) <+ (result & 4) ? vHigh : vLow;
 V(D3) <+ (result & 8) ? vHigh : vLow;
+V(D4) <+ (result & 16) ? vHigh : vLow;
+V(D5) <+ (result & 32) ? vHigh : vLow;
+V(D6) <+ (result & 64) ? vHigh : vLow;
+V(D7) <+ (result & 128) ? vHigh : vLow;
 end
 // end of module
 endmodule
