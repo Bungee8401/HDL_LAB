@@ -32,17 +32,85 @@ analog begin
 end
 endmodule
 
-// analog begin
-//   @(cross(V(clk)-clk_vth, +1)) begin
-//     sample = V(in);
-//     for(i=7;i>=0;i=i-1) begin
-//     if (sample > 0.9) begin
-//       result[i] = out_high;
-//       sample = sample-0.9;
-//     end
-//     else begin
-//       result[i] = out_low;
-//     end
-//     sample = 2*sample;
-//   end
-// end
+`include "constants.vams"
+`include "disciplines.vams"
+
+module ADC (in, clk, out);
+output [7:0] out;
+input in, clk;
+electrical in, clk;
+electrical out;
+
+//parameter integer adc_size = 8 from [1:inf);
+parameter real fullscale = 1.8; //was 1 
+parameter real delay_ = 0, trise = 10n, tfall = 10n;  // trise needs to change ???
+parameter real clk_vth = 0.9; // ??? uncertain, needs to look at clk voltage in cadnece
+parameter real out_high = 1, out_low = 0 from (-inf:out_high);
+real sample,thresh;
+real result[7:0];
+integer i;
+
+analog begin
+  @(cross(V(clk)-clk_vth, +1)) begin
+    sample = V(in);
+    thresh = fullscale/2;
+    for(i=7;i>=0;i=i-1) begin
+      if (sample > thresh) begin
+        result[i] = out_high;
+        sample = sample - thresh;
+      end
+      else begin
+        result[i] = out_low;
+      sample = 2*sample;  
+      end
+    end
+  end
+end
+
+for (i=0; i<8; i=i+1)
+  V(out[i]) <+ transition(result & (1<<i) ? out_high : 0, delay_, trise, tfall);
+
+endmodule
+
+
+// VerilogA for cad4soc, cad4socQuantizer, veriloga
+`include "constants.vams"
+`include "disciplines.vams"
+module cad4socQuantizer(AGND, D0, D1, D2, D3, vIn);
+inout AGND;
+electrical AGND;
+inout D0;
+electrical D0;
+inout D1;
+electrical D1;
+inout D2;
+electrical D2;
+inout D3;
+electrical D3;
+inout vIn;
+electrical vIn;
+// end of automatically generated header
+// the logic levels are 0 to 3.3. V
+parameter real vLow = 0 from [0:inf];
+parameter real vHigh = 3.3 from [0:inf];
+// the reference voltage is 3.3. V
+parameter real vRefL = 0 from [0:inf];
+parameter real vRefH = 3.3 from [0:inf];
+localparam integer levels = 16;
+integer result;
+analog begin
+// the output value is calculated arithmetically
+result = levels*(V(vIn,AGND) - vRefL)/(vRefH - vRefL)-0.5;
+// overflow and underflow are caught here
+if (result > levels-1)
+result = levels-1;
+else if (result < 0)
+result = 0;
+// the integer result is converted into bits
+V(D0) <+ (result & 1) ? vHigh : vLow;
+V(D1) <+ (result & 2) ? vHigh : vLow;
+V(D2) <+ (result & 4) ? vHigh : vLow;
+V(D3) <+ (result & 8) ? vHigh : vLow;
+end
+// end of module
+endmodule
