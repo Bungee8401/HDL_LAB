@@ -23,11 +23,6 @@
     //     end
         
     // end
-// 不要在意，写给自己看状态时序的，后续会删
-
-
-
-
 
 
 module FIR_IR ( 
@@ -104,3 +99,5 @@ always @(posedge CLK_Filter or negedge rst_n) begin
 		end
 	end
 end
+
+endmodule

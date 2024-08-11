@@ -1,12 +1,16 @@
 `timescale 1ms/1ms
 
 module FIR_TB ();
-
+	localparam half_cycle = 1;
     reg CLK_Filter;
     reg [7:0] ADC_Value;
     reg rst_n;
 
     wire [19:0] Out_Filtered;
+
+    always CLK_Filter = #(half_cycle) ~CLK_Filter;
+
+
 
     FIR_IR ins1 (
         .CLK_Filter     (CLK_Filter),
@@ -16,10 +20,7 @@ module FIR_TB ();
         .Out_IR_Filtered    (Out_Filtered)
     );
 
-    
-    initial forever #1 CLK_Filter = ~CLK_Filter; 
-
-	initial begin
+    	initial begin
         //$dumpfile("test.vcd"); $dumpvars;
 
         CLK_Filter = 0;

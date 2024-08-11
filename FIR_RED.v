@@ -74,3 +74,5 @@ always @(posedge CLK_Filter or negedge rst_n) begin
 		end
 	end
 end
+
+endmodule
