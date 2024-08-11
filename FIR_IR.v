@@ -1,38 +1,24 @@
+/***********************************************************
+>> FIR_IR : f_s：500hz,(2ms) f_cutoff：10Hz, order： 21
+>> mul : 22, but only 11 multipliers needed as FIR_coefficoefficients are symmetry
+>> adder : 21
+>> shift_reg : 21+1 = 22
+
+>>the LED of the finger-clip needs to start alternating between
+infrared and red with a frequency of 100 Hz. 10ms
+************************************************************/
+
 `timescale 1ms/1ms;
-
-    // always @(posedge CLK) begin  
-    //     if(Find_setting_Complete) begin // setting found, switch faster -> 100Hz, 10ms       
-    //         if(timer == 9) begin
-    //             timer <= 0;
-    //             LED_RED <= ~LED_RED;
-    //             LED_IR <= ~LED_IR;
-    //         end else begin
-    //             timer <= timer + 1;       
-    //             if (LED_RED == 1 && LED_IR == 0) begin
-    //                 RED_ADC_Value <= ADC;
-    //                 PGA_Gain <= RED_PGA;
-    //                 DC_Comp <= RED_DC_Comp;
-    //             end 
-
-    //             if (LED_RED == 0 && LED_IR == 1) begin
-    //                 IR_ADC_Value <= ADC;
-    //                 PGA_Gain <= IR_PGA;
-    //                 DC_Comp <= IR_DC_Comp;           
-    //             end
-    //         end
-    //     end
-        
-    // end
-
-
 module FIR_IR ( 
 	input CLK_Filter,
 	input rst_n,
 	input  [7:0] IR_ADC_Value,
+	
 	output reg [19:0] Out_IR_Filtered
 	);
 
-//define coefficients
+//define coefficients 
+//22 coeficienrs --> 22'b -->21z^-1 21 steps
 wire [7:0] coeff[10:0];
 assign coeff[0]= 8'd2; 
 assign coeff[1]=8'd10; 
@@ -46,46 +32,64 @@ assign coeff[8]=8'd111;
 assign coeff[9]=8'd122;
 assign coeff[10]=8'd128;
 
-reg  [7:0] in_shift [20:0]; //21steps
-reg  [19:0] mul_reg [10:0]; //22mul, but only 11 multipliers needed as FIR_coefficoefficients are symmetry
-//reg  [19:0] add_reg ;
+reg  [7:0] in_shift [21:0]; 
+reg  [19:0] mul_reg [10:0]; 
+reg  [19:0] add_reg [11:0];
 
 integer i,j;
 
+//22 shift_register, in_shift [21:0]
 always @(posedge CLK_Filter or negedge rst_n) begin
 	if(!rst_n)begin
-		for (i=0; i<=20; i=i+1) begin
+		for (i=0; i<21; i=i+1) begin
 			in_shift[i] <= 7'd0; 
 		end
 	end 
 	else begin
-		in_shift[0] = IR_ADC_Value;
-		for (i=0; i<=20; i=i+1) begin
-			in_shift [i+1] = in_shift[i];
+		in_shift[0] <= IR_ADC_Value;
+		for (i=0; i<21; i=i+1) begin
+			in_shift [i+1] <= in_shift[i];
 			//$timeformat(-3, 0, "ns"); 
 			$display("in_shift %b",in_shift[i]);
 		end
 	end
 end
 				
-		
+//ADDER	
 always @(posedge CLK_Filter or negedge rst_n) begin
 	if(!rst_n)begin
-		for (j=0; j<=10; j=j+1) begin
+		for (j=0; j<11; j=j+1) begin
 			mul_reg[j] <= 20'd0;
+			add_reg[j] <= 20'd0;
 		end
-
 	end 
 	else begin
-		for (j=0; j<=10; j=j+1) begin
-			mul_reg[j] <= coeff[j] * (in_shift [j] + in_shift [20-j]);
-			$display("mul_reg %b",mul_reg[j]);
-			$display("coeff %b",coeff[j]);
+		for (j=0; j<11; j=j+1) begin
+			add_reg[j] = in_shift [j] + in_shift [21-j];
+			mul_reg[j] = coeff[j] * add_reg[j];  //这样的话addreg会立刻更新，和coeff参数可以正确对应。但是同时用<=和=会不会在后续造成问题
+			// //这里应该再延一个时间周期？
+			// mul_reg[j] <= coeff[j] * add_reg[j];
+			// $display("mul_reg %b",mul_reg[j]);
+			// $display("coeff %b",coeff[j]);
 		end
 	end
 end
 
-
+// //11 mul, mul_reg [10:0]
+// always @(posedge CLK_Filter or negedge rst_n) begin
+// 	if(!rst_n)begin
+// 		for (j=0; j<11; j=j+1) begin
+// 			mul_reg[j] <= 20'd0;
+// 		end
+// 	end 
+// 	else begin
+// 		for (j=0; j<11; j=j+1) begin
+// 			mul_reg[j] = coeff[j] * add_reg[j];
+// 			$display("mul_reg %b",mul_reg[j]);
+// 			$display("coeff %b",coeff[j]);
+// 		end
+// 	end
+// end
 
 always @(posedge CLK_Filter or negedge rst_n) begin
 
@@ -94,7 +98,7 @@ always @(posedge CLK_Filter or negedge rst_n) begin
 	end 
 	else begin
 		for (j=0; j<=10; j=j+1) begin
-			Out_IR_Filtered = Out_IR_Filtered + mul_reg[j];
+			Out_IR_Filtered <= Out_IR_Filtered + mul_reg[j];
 			$display("Out_IR_Filtered %b",Out_IR_Filtered);
 		end
 	end
