@@ -134,7 +134,7 @@ module Controller_small (
                         RED_DC_Comp <= DC_Comp;
                         V_max <= 0;
                         V_min <= 255;
-                        PGA_Gain <= 4'd3;
+                        // PGA_Gain <= 4'd0;
                     end
                 end
             end 
@@ -151,73 +151,75 @@ module Controller_small (
                             V_max <= 0;
                             V_min <= 255; 
                             PGA_Gain <= PGA_Gain + 4'b1;
-                            next_state <= PGA_RED_IN;                            
+                            next_state <= PGA_RED;                            
                         end
                         
                         if (V_min<10 || V_max>245 ) begin  
                             V_max <= 0;
                             V_min <= 255; 
-                            PGA_Gain <= PGA_Gain - 4'b1;
-                            next_state <= PGA_RED_OUT;
+                            // PGA_Gain <= PGA_Gain - 4'b1;
+                            RED_PGA <= PGA_Gain - 4'b1;
+                            // next_state <= PGA_RED_OUT;
+                            next_state <= DC_IR;
                                                 
                         end
                     end   
             end
 
-            PGA_RED_IN: begin
-                        if (i<HALF_ADC_PERIOD) begin
-                        V_min <= (ADC < V_min) ? ADC : V_min;
-                        V_max <= (ADC > V_max) ? ADC : V_max;
-                        i<=i+1;
-                    end
-                    else begin
-                        i=0;
-                        if (10<V_min && V_max<245) begin
-                            PGA_Gain <= PGA_Gain + 4'b1;
-                            V_max <= 0;
-                            V_min <= 255;
-                        end
+            // PGA_RED_IN: begin
+            //             if (i<HALF_ADC_PERIOD) begin
+            //             V_min <= (ADC < V_min) ? ADC : V_min;
+            //             V_max <= (ADC > V_max) ? ADC : V_max;
+            //             i<=i+1;
+            //         end
+            //         else begin
+            //             i=0;
+            //             if (10<V_min && V_max<245) begin
+            //                 PGA_Gain <= PGA_Gain + 4'b1;
+            //                 V_max <= 0;
+            //                 V_min <= 255;
+            //             end
                         
-                        if (V_min<10 || V_max>245 ) begin  
+            //             if (V_min<10 || V_max>245 ) begin  
                             
-                            next_state <= DC_IR;                            
-                            RED_PGA <= PGA_Gain - 4'b1;
-                            PGA_Gain <= 0;
-                            V_max <= 0;
-                            V_min <= 255;
-                            average <= 0; //在开始计算IRDC之前清空counter
-                            DC_Comp <= 100;  //让IR不要一开始就位移去奇怪地方
-                        end
-                end
-            end
+            //                 next_state <= DC_IR;                            
+            //                 RED_PGA <= PGA_Gain - 4'b1;
+            //                 PGA_Gain <= 0;
+            //                 V_max <= 0;
+            //                 V_min <= 255;
+            //                 average <= 0; //在开始计算IRDC之前清空counter
+            //                 DC_Comp <= 100;  //让IR不要一开始就位移去奇怪地方
+            //             end
+            //     end
+            // end
                 
-            PGA_RED_OUT: begin
-                        if (i<HALF_ADC_PERIOD) begin
-                        V_min <= (ADC < V_min) ? ADC : V_min;
-                        V_max <= (ADC > V_max) ? ADC : V_max;
-                        i<=i+1;
-                    end
-                    else begin
-                        i=0;
-                        if (10<V_min && V_max<245) begin
-                            next_state <= DC_IR;
-                            //@ (negedge CLK);
-                            RED_PGA <= PGA_Gain;
-                            PGA_Gain <= 0;
+            // PGA_RED_OUT: begin
+            //             if (i<HALF_ADC_PERIOD) begin
+            //             V_min <= (ADC < V_min) ? ADC : V_min;
+            //             V_max <= (ADC > V_max) ? ADC : V_max;
+            //             i<=i+1;
+            //         end
+            //         else begin
+            //             i=0;
+            //             if (10<V_min && V_max<245) begin
+            //                 next_state <= DC_IR;
+            //                 //@ (negedge CLK);
+            //                 RED_PGA <= PGA_Gain;
+            //                 PGA_Gain <= 0;
                             
-                            V_max <= 0;
-                            V_min <= 255;  
-                            DC_Comp <= 100;  //和IN里头一样
-                            average <= 0;                     
-                        end
+            //                 V_max <= 0;
+            //                 V_min <= 255;  
+            //                 DC_Comp <= 100;  //和IN里头一样
+            //                 average <= 0;                     
+            //             end
                         
-                        if (V_min<10 || V_max>245 ) begin  
-                            PGA_Gain <= PGA_Gain - 4'b1;
-                            V_max <= 0;
-                            V_min <= 255; 
-                        end
-                end
-            end                          
+            //             if (V_min<10 || V_max>245 ) begin  
+            //                 PGA_Gain <= PGA_Gain - 4'b1;
+            //                 V_max <= 0;
+            //                 V_min <= 255; 
+            //             end
+            //     end
+            // end                          
 
             DC_IR: begin // DC comb for IR 
                 LED_RED <= 1'b0;
@@ -251,7 +253,7 @@ module Controller_small (
                         V_max <= 0;
                         V_min <= 255;
                         // DC_Comp = 0;
-                        PGA_Gain <= 4'd7;
+                        PGA_Gain <= 4'd0;
                     end
                 end
             end 
@@ -268,75 +270,75 @@ module Controller_small (
                             V_max <= 0;
                             V_min <= 255; 
                             PGA_Gain <= PGA_Gain + 4'b1;
-                            next_state <= PGA_IR_IN;                            
+                            next_state <= PGA_IR;                            
                         end
                         
                         if (V_min<10 || V_max>245 ) begin  
                             V_max <= 0;
                             V_min <= 255; 
-                            PGA_Gain <= PGA_Gain - 4'b1;
-                            next_state <= PGA_IR_OUT;
+                            IR_PGA <= PGA_Gain - 4'b1;
+                            next_state <= OPERATION;
                                                 
                         end
                     end   
             end
 
-            PGA_IR_IN: begin
-                        if (i<HALF_ADC_PERIOD) begin
-                        V_min <= (ADC < V_min) ? ADC : V_min;
-                        V_max <= (ADC > V_max) ? ADC : V_max;
-                        i <= i+1;
-                    end
-                    else begin
-                        i=0;
-                        if (10<V_min && V_max<245) begin
-                            PGA_Gain <= PGA_Gain + 4'b1;
-                            V_max <= 0;
-                            V_min <= 255;
-                        end
+            // PGA_IR_IN: begin
+            //             if (i<HALF_ADC_PERIOD) begin
+            //             V_min <= (ADC < V_min) ? ADC : V_min;
+            //             V_max <= (ADC > V_max) ? ADC : V_max;
+            //             i <= i+1;
+            //         end
+            //         else begin
+            //             i=0;
+            //             if (10<V_min && V_max<245) begin
+            //                 PGA_Gain <= PGA_Gain + 4'b1;
+            //                 V_max <= 0;
+            //                 V_min <= 255;
+            //             end
                         
-                        if (V_min<10 || V_max>245 ) begin  
+            //             if (V_min<10 || V_max>245 ) begin  
                             
-                            next_state <= OPERATION;
-                            // @ (negedge CLK);
-                            IR_PGA <= PGA_Gain - 4'b1;
-                            PGA_Gain <= 0;
-                            V_max <= 0;
-                            V_min <= 255;
+            //                 next_state <= OPERATION;
+            //                 // @ (negedge CLK);
+            //                 IR_PGA <= PGA_Gain - 4'b1;
+            //                 PGA_Gain <= 0;
+            //                 V_max <= 0;
+            //                 V_min <= 255;
 
-                            DC_Comp <= 100;  //和IN里头一样
-                            average <= 0;
-                        end
-                end
-            end
+            //                 DC_Comp <= 100;  //和IN里头一样
+            //                 average <= 0;
+            //             end
+            //     end
+            // end
 
                 
-            PGA_IR_OUT: begin
-                        if (i<HALF_ADC_PERIOD) begin
-                        V_min <= (ADC < V_min) ? ADC : V_min;
-                        V_max <= (ADC > V_max) ? ADC : V_max;
-                        i<=i+1;
-                    end
-                    else begin
-                        i<=0;
-                        if (10<V_min && V_max<245) begin
-                            next_state <= OPERATION;
-                            // @ (negedge CLK);
-                            IR_PGA <= PGA_Gain;
-                            PGA_Gain <= 0;
-                            DC_Comp <= 100;  //写100是因为这是初始值，但是感觉也可以写其他的，因为在下一个状态要被开始交替赋值了
-                            average <= 0;
-                            V_max <= 0;
-                            V_min <= 255;                       
-                        end
+            // PGA_IR_OUT: begin
+            //             if (i<HALF_ADC_PERIOD) begin
+            //             V_min <= (ADC < V_min) ? ADC : V_min;
+            //             V_max <= (ADC > V_max) ? ADC : V_max;
+            //             i<=i+1;
+            //         end
+            //         else begin
+            //             i<=0;
+            //             if (10<V_min && V_max<245) begin
+            //                 next_state <= OPERATION;
+            //                 // @ (negedge CLK);
+            //                 IR_PGA <= PGA_Gain;
+            //                 PGA_Gain <= 0;
+            //                 DC_Comp <= 100;  //写100是因为这是初始值，但是感觉也可以写其他的，因为在下一个状态要被开始交替赋值了
+            //                 average <= 0;
+            //                 V_max <= 0;
+            //                 V_min <= 255;                       
+            //             end
                         
-                        if (V_min<10 || V_max>245 ) begin  
-                            PGA_Gain <= PGA_Gain - 4'b1;
-                            V_max <= 0;
-                            V_min <= 255; 
-                        end
-                end
-            end
+            //             if (V_min<10 || V_max>245 ) begin  
+            //                 PGA_Gain <= PGA_Gain - 4'b1;
+            //                 V_max <= 0;
+            //                 V_min <= 255; 
+            //             end
+            //     end
+            // end
 
             OPERATION: begin
 		        Find_setting_Complete  = 1'b1;      // flag signal for LED switching block
