@@ -293,6 +293,7 @@ module Controller_small (
                             V_min <= 255; 
                             IR_PGA <= PGA_Gain - 4'b1;
                             next_state <= OPERATION;
+                            PGA_Gain <= 4'b0;
                                                 
                         end
                     end   
