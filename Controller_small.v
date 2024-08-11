@@ -119,12 +119,18 @@ module Controller_small (
                         // DC_Comp <= DC_Comp - 7'd5;
                         DC_Comp <= DC_Comp - DC_Comp/2;
                         // DC_Comp = DC_Comp - ((120-average)>>1);
+
+                        V_max <= 0;
+                        V_min <= 255;
                     end
                         
                     else if (average>135) begin
                         // DC_Comp <= DC_Comp + 7'd1;
                         DC_Comp <= DC_Comp + DC_Comp/2;
                         // DC_Comp = DC_Comp + ((135-average)>>1);
+
+                        V_max <= 0;
+                        V_min <= 255;
                     end
                         
                     else begin
@@ -238,12 +244,20 @@ module Controller_small (
                         //DC_Comp <= DC_Comp - 7'd5; 
                         DC_Comp <= DC_Comp - DC_Comp/2;
                         // DC_Comp = DC_Comp - ((120-average)>>1); 
+
+                        V_max <= 0;
+                        V_min <= 255;
+
                     end
                         
                     else if (average>135) begin
                         //DC_Comp <= DC_Comp + 7'd1; 
                         DC_Comp <= DC_Comp + DC_Comp/2; 
                         // DC_Comp = DC_Comp + ((135-average)>>1);  
+
+                        V_max <= 0;
+                        V_min <= 255;
+                        
                     end
                 
                     else begin  
