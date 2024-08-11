@@ -144,14 +144,14 @@ module Controller_small (
                     end
                     else begin
                         i=0;
-                        if (10<V_min) && (V_max<245) begin
+                        if (10<V_min && V_max<245) begin
                             V_max <= 0;
                             V_min <= 255; 
                             PGA_Gain <= PGA_Gain + 4'b1;
                             next_state <= PGA_RED_IN;                            
                         end
                         
-                        if (V_min<10) || (V_max>245 ) begin  
+                        if (V_min<10 || V_max>245 ) begin  
                             V_max <= 0;
                             V_min <= 255; 
                             PGA_Gain <= PGA_Gain - 4'b1;
@@ -169,13 +169,13 @@ module Controller_small (
                     end
                     else begin
                         i=0;
-                        if (10<V_min) && (V_max<245) begin
+                        if (10<V_min && V_max<245) begin
                             PGA_Gain <= PGA_Gain + 4'b1;
                             V_max <= 0;
                             V_min <= 255;
                         end
                         
-                        if (V_min<10) || (V_max>245 ) begin  
+                        if (V_min<10 || V_max>245 ) begin  
                             
                             next_state <= DC_IR;                            
                             ED_PGA <= PGA_Gain - 4'b1;
@@ -196,7 +196,7 @@ module Controller_small (
                     end
                     else begin
                         i=0;
-                        if (10<V_min) && (V_max<245) begin
+                        if (10<V_min && V_max<245) begin
                             next_state <= DC_IR;
                             //@ (negedge CLK);
                             RED_PGA <= PGA_Gain;
@@ -261,14 +261,14 @@ module Controller_small (
                     end
                     else begin
                         i=0;
-                        if (10<V_min) && (V_max<245) begin
+                        if (10<V_min && V_max<245) begin
                             V_max <= 0;
                             V_min <= 255; 
                             PGA_Gain <= PGA_Gain + 4'b1;
                             next_state <= PGA_IR_IN;                            
                         end
                         
-                        if (V_min<10) || (V_max>245 ) begin  
+                        if (V_min<10 || V_max>245 ) begin  
                             V_max <= 0;
                             V_min <= 255; 
                             PGA_Gain <= PGA_Gain - 4'b1;
@@ -286,13 +286,13 @@ module Controller_small (
                     end
                     else begin
                         i=0;
-                        if (10<V_min) && (V_max<245) begin
+                        if (10<V_min && V_max<245) begin
                             PGA_Gain <= PGA_Gain + 4'b1;
                             V_max <= 0;
                             V_min <= 255;
                         end
                         
-                        if (V_min<10) || (V_max>245 ) begin  
+                        if (V_min<10 || V_max>245 ) begin  
                             
                             next_state <= OPERATION;
                             // @ (negedge CLK);
@@ -316,7 +316,7 @@ module Controller_small (
                     end
                     else begin
                         i<=0;
-                        if (10<V_min)&& (V_max<245) begin
+                        if (10<V_min && V_max<245) begin
                             next_state <= OPERATION;
                             // @ (negedge CLK);
                             IR_PGA <= PGA_Gain;
@@ -327,7 +327,7 @@ module Controller_small (
                             V_min <= 255;                       
                         end
                         
-                        if (V_min<10) || (V_max>245 ) begin  
+                        if (V_min<10 || V_max>245 ) begin  
                             PGA_Gain <= PGA_Gain - 4'b1;
                             V_max <= 0;
                             V_min <= 255; 
