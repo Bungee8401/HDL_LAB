@@ -167,6 +167,7 @@ module Controller_small (
                             RED_PGA <= PGA_Gain - 4'b1;
                             // next_state <= PGA_RED_OUT;
                             next_state <= DC_IR;
+                            PGA_Gain <= 4'd0;
                                                 
                         end
                     end   
@@ -257,7 +258,7 @@ module Controller_small (
 
                         V_max <= 0;
                         V_min <= 255;
-                        
+
                     end
                 
                     else begin  
@@ -273,7 +274,7 @@ module Controller_small (
             end 
 
             PGA_IR: begin
-                     if (i<HALF_ADC_PERIOD) begin
+                    if (i<HALF_ADC_PERIOD) begin
                         V_min <= (ADC < V_min) ? ADC : V_min;
                         V_max <= (ADC > V_max) ? ADC : V_max;
                         i <= i+1;
