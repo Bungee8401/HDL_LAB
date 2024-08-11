@@ -48,6 +48,9 @@ module Controller_small (
     parameter PGA_IR_IN = 8'b0001_0011;//19
     parameter PGA_IR_OUT = 8'b0001_0100;//20
 
+    parameter ONE_ADC_PERIOD = 1000;
+    parameter HALF_ADC_PERIOD = 1000;
+
     //clk_filter
     always @(posedge CLK) begin
         CLK_Filter <= ~CLK_Filter;
@@ -102,7 +105,7 @@ module Controller_small (
                 LED_RED <= 1'b1;
                 LED_IR <= 1'b0;
 
-                if (i<1000) begin
+                if (i<HALF_ADC_PERIOD) begin
                     //@ (negedge CLK); 
                     V_max <= (ADC > V_max)?  ADC:V_max;
                     V_min <= (ADC < V_min)?  ADC:V_min;
@@ -113,14 +116,14 @@ module Controller_small (
                     i<=0;
                     average <= (V_max + V_min) >>1; 
                     if (average<120) begin
-                        DC_Comp <= DC_Comp - 7'd5;
-                        // DC_Comp <= DC_Comp - DC_Comp/2;
+                        // DC_Comp <= DC_Comp - 7'd5;
+                        DC_Comp <= DC_Comp - DC_Comp/2;
                         // DC_Comp = DC_Comp - ((120-average)>>1);
                     end
                         
                     else if (average>135) begin
-                        DC_Comp <= DC_Comp + 7'd1;
-                        // DC_Comp <= DC_Comp + DC_Comp/2;
+                        // DC_Comp <= DC_Comp + 7'd1;
+                        DC_Comp <= DC_Comp + DC_Comp/2;
                         // DC_Comp = DC_Comp + ((135-average)>>1);
                     end
                         
@@ -137,7 +140,7 @@ module Controller_small (
             end 
 
             PGA_RED: begin
-                    if (i<1000) begin
+                    if (i<HALF_ADC_PERIOD) begin
                         V_min <= (ADC < V_min) ? ADC : V_min;
                         V_max <= (ADC > V_max) ? ADC : V_max;
                         i<=i+1;
@@ -162,7 +165,7 @@ module Controller_small (
             end
 
             PGA_RED_IN: begin
-                        if (i<1000) begin
+                        if (i<HALF_ADC_PERIOD) begin
                         V_min <= (ADC < V_min) ? ADC : V_min;
                         V_max <= (ADC > V_max) ? ADC : V_max;
                         i<=i+1;
@@ -189,7 +192,7 @@ module Controller_small (
             end
                 
             PGA_RED_OUT: begin
-                        if (i<1000) begin
+                        if (i<HALF_ADC_PERIOD) begin
                         V_min <= (ADC < V_min) ? ADC : V_min;
                         V_max <= (ADC > V_max) ? ADC : V_max;
                         i<=i+1;
@@ -220,7 +223,7 @@ module Controller_small (
                 LED_RED <= 1'b0;
                 LED_IR <= 1'b1;
 
-                if (i<1000) begin
+                if (i<HALF_ADC_PERIOD) begin
                     //@ (negedge CLK); 
                     V_max <= (ADC > V_max)?  ADC:V_max;
                     V_min <= (ADC < V_min)?  ADC:V_min;                   
@@ -230,14 +233,14 @@ module Controller_small (
                     i<=0;
                     average <= (V_max + V_min) >>1; 
                     if (average<120) begin
-                        DC_Comp <= DC_Comp - 7'd5; 
-                        //DC_Comp <= DC_Comp - DC_Comp/2;
+                        //DC_Comp <= DC_Comp - 7'd5; 
+                        DC_Comp <= DC_Comp - DC_Comp/2;
                         // DC_Comp = DC_Comp - ((120-average)>>1); 
                     end
                         
                     else if (average>135) begin
-                        DC_Comp <= DC_Comp + 7'd1; 
-                        // DC_Comp <= DC_Comp + DC_Comp/2; 
+                        //DC_Comp <= DC_Comp + 7'd1; 
+                        DC_Comp <= DC_Comp + DC_Comp/2; 
                         // DC_Comp = DC_Comp + ((135-average)>>1);  
                     end
                 
@@ -254,7 +257,7 @@ module Controller_small (
             end 
 
             PGA_IR: begin
-                     if (i<1000) begin
+                     if (i<HALF_ADC_PERIOD) begin
                         V_min <= (ADC < V_min) ? ADC : V_min;
                         V_max <= (ADC > V_max) ? ADC : V_max;
                         i <= i+1;
@@ -279,7 +282,7 @@ module Controller_small (
             end
 
             PGA_IR_IN: begin
-                        if (i<1000) begin
+                        if (i<HALF_ADC_PERIOD) begin
                         V_min <= (ADC < V_min) ? ADC : V_min;
                         V_max <= (ADC > V_max) ? ADC : V_max;
                         i <= i+1;
@@ -309,7 +312,7 @@ module Controller_small (
 
                 
             PGA_IR_OUT: begin
-                        if (i<1000) begin
+                        if (i<HALF_ADC_PERIOD) begin
                         V_min <= (ADC < V_min) ? ADC : V_min;
                         V_max <= (ADC > V_max) ? ADC : V_max;
                         i<=i+1;
