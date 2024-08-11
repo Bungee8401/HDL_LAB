@@ -134,7 +134,7 @@ module Controller_small (
                         RED_DC_Comp <= DC_Comp;
                         V_max <= 0;
                         V_min <= 255;
-                        PGA_Gain <= 4'd7;
+                        PGA_Gain <= 4'd3;
                     end
                 end
             end 
