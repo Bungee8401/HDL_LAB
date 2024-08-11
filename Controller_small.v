@@ -178,7 +178,7 @@ module Controller_small (
                         if (V_min<10 || V_max>245 ) begin  
                             
                             next_state <= DC_IR;                            
-                            ED_PGA <= PGA_Gain - 4'b1;
+                            RED_PGA <= PGA_Gain - 4'b1;
                             PGA_Gain <= 0;
                             V_max <= 0;
                             V_min <= 255;
