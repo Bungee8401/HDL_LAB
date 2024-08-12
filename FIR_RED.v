@@ -1,5 +1,5 @@
 /***********************************************************
->> FIR_RED : f_s：500hz,(2ms) f_cutoff：10Hz, order： 21
+>> FIR_RED : f_s?500hz,(2ms) f_cutoff?10Hz, order? 21
 >> mul : 11, FIR_coefficoefficients are symmetry
 >> adder : 21
 >> shift_reg : 21+1 = 22
@@ -8,7 +8,7 @@
 infrared and red with a frequency of 100 Hz. 10ms
 ************************************************************/
 
-`timescale 1ms/1ms;
+`timescale 1ms/1ms
 module FIR_RED ( 
 	input CLK_Filter,
 	input rst_n,
@@ -34,9 +34,10 @@ assign coeff[10]=8'd128;
 
 reg  [7:0] in_shift [21:0]; 
 reg  [19:0] mul_reg [10:0]; 
-reg  [19:0] add_reg [10:0];
+// reg  [19:0] add_reg [10:0];
 
 integer i,j;
+reg [2:0] en;
 
 //22 shift_register, in_shift [21:0]
 always @(posedge CLK_Filter or negedge rst_n) begin
@@ -44,14 +45,16 @@ always @(posedge CLK_Filter or negedge rst_n) begin
 		for (i=0; i<21; i=i+1) begin
 			in_shift[i] <= 7'd0; 
 		end
+		en[2:0] <= 3'b001;
 	end 
-	else begin
+	else if (en[0]) begin
 		in_shift[0] <= RED_ADC_Value;
 		for (i=0; i<21; i=i+1) begin
-			in_shift [i+1] = in_shift[i];
+			in_shift [i+1] <= in_shift[i];
 			//$timeformat(-3, 0, "ns"); 
 			$display("in_shift %b",in_shift[i]);
 		end
+		en[2:0] <= {en[1:0], 1'b0};
 	end
 end
 				
@@ -63,7 +66,7 @@ always @(posedge CLK_Filter or negedge rst_n) begin
 			//add_reg[j] <= 20'd0;
 		end
 	end 
-	else begin
+	else if (en[1])begin
 		for (j=0; j<11; j=j+1) begin
 			mul_reg[j] <= coeff[j] * (in_shift [j] + in_shift [21-j]); 
 			
@@ -71,6 +74,7 @@ always @(posedge CLK_Filter or negedge rst_n) begin
 			// $display("mul_reg %b",mul_reg[j]);
 			// $display("coeff %b",coeff[j]);
 		end
+		en[2:0] <= {en[1:0], 1'b1};
 	end
 end
 
@@ -80,11 +84,12 @@ always @(posedge CLK_Filter or negedge rst_n) begin
 	if(!rst_n)begin
 			Out_RED_Filtered <= 20'd0;
 	end 
-	else begin
+	else if (en[2]) begin
 		for (j=0; j<=10; j=j+1) begin
 			Out_RED_Filtered <= Out_RED_Filtered + mul_reg[j];
-			$display("Out_IR_Filtered %b",Out_RED_Filtered);
+			$display("Out_RED_Filtered %b",Out_RED_Filtered);
 		end
+		en[2:0] <= {en[1:0], 1'b1};
 	end
 end
 
