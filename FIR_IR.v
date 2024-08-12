@@ -1,6 +1,6 @@
 /***********************************************************
 >> FIR_IR : f_s：500hz,(2ms) f_cutoff：10Hz, order： 21
->> mul : 22, but only 11 multipliers needed as FIR_coefficoefficients are symmetry
+>> mul : 11, FIR_coefficoefficients are symmetry
 >> adder : 21
 >> shift_reg : 21+1 = 22
 
@@ -34,7 +34,7 @@ assign coeff[10]=8'd128;
 
 reg  [7:0] in_shift [21:0]; 
 reg  [19:0] mul_reg [10:0]; 
-reg  [19:0] add_reg [11:0];
+reg  [19:0] add_reg [10:0];
 
 integer i,j;
 
@@ -48,7 +48,7 @@ always @(posedge CLK_Filter or negedge rst_n) begin
 	else begin
 		in_shift[0] <= IR_ADC_Value;
 		for (i=0; i<21; i=i+1) begin
-			in_shift [i+1] <= in_shift[i];
+			in_shift [i+1] = in_shift[i];
 			//$timeformat(-3, 0, "ns"); 
 			$display("in_shift %b",in_shift[i]);
 		end
@@ -65,31 +65,15 @@ always @(posedge CLK_Filter or negedge rst_n) begin
 	end 
 	else begin
 		for (j=0; j<11; j=j+1) begin
-			add_reg[j] = in_shift [j] + in_shift [21-j];
-			mul_reg[j] = coeff[j] * add_reg[j];  //这样的话addreg会立刻更新，和coeff参数可以正确对应。但是同时用<=和=会不会在后续造成问题
-			// //这里应该再延一个时间周期？
-			// mul_reg[j] <= coeff[j] * add_reg[j];
+			mul_reg[j] <= coeff[j] * (in_shift [j] + in_shift [21-j]); 
+			
+			
 			// $display("mul_reg %b",mul_reg[j]);
 			// $display("coeff %b",coeff[j]);
 		end
 	end
 end
 
-// //11 mul, mul_reg [10:0]
-// always @(posedge CLK_Filter or negedge rst_n) begin
-// 	if(!rst_n)begin
-// 		for (j=0; j<11; j=j+1) begin
-// 			mul_reg[j] <= 20'd0;
-// 		end
-// 	end 
-// 	else begin
-// 		for (j=0; j<11; j=j+1) begin
-// 			mul_reg[j] = coeff[j] * add_reg[j];
-// 			$display("mul_reg %b",mul_reg[j]);
-// 			$display("coeff %b",coeff[j]);
-// 		end
-// 	end
-// end
 
 always @(posedge CLK_Filter or negedge rst_n) begin
 

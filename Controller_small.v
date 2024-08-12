@@ -53,7 +53,7 @@ module Controller (
 
     //clk_filter
     always @(posedge CLK) begin
-        CLK_Filter <= ~CLK_Filter;
+        CLK_Filter <= ~CLK_Filter; 
     end    
 
 
@@ -168,7 +168,8 @@ module Controller (
                             // next_state <= PGA_RED_OUT;
                             next_state = DC_IR;
                             PGA_Gain = 4'd0;
-                            DC_Comp =  7'd64;                     
+                            DC_Comp =  7'd64; 
+                                                
                         end
                     end   
             end
@@ -233,7 +234,6 @@ module Controller (
                 LED_IR = 1'b1;
 
                 if (i<HALF_ADC_PERIOD) begin
-                    //@ (negedge CLK); 
                     V_max = (ADC > V_max)?  ADC:V_max;
                     V_min = (ADC < V_min)?  ADC:V_min;                   
                     i=i+1;
