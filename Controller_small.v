@@ -49,7 +49,7 @@ module Controller_small (
     parameter PGA_IR_OUT = 8'b0001_0100;//20
 
     parameter ONE_ADC_PERIOD = 1000;
-    parameter HALF_ADC_PERIOD = 1000;
+    parameter HALF_ADC_PERIOD = 500;
 
     //clk_filter
     always @(posedge CLK) begin
@@ -114,19 +114,19 @@ module Controller_small (
                 end
                 else begin
                     i<=0;
-                    average <= (V_max + V_min) >>1; 
-                    if (average<120) begin
-                        DC_Comp <= DC_Comp - 7'd5;
-                        // DC_Comp <= DC_Comp - (DC_Comp>>1);
+                    average = (V_max + V_min) >>1; 
+                    if (average<110) begin
+                        DC_Comp <= DC_Comp - 7'd4;
+                        // DC_Comp <= DC_Comp - ((DC_Comp-7'd90)>>1);
                         // DC_Comp = DC_Comp - ((120-average)>>1);
 
                         V_max <= 0;
                         V_min <= 255;
                     end
                         
-                    else if (average>135) begin
-                        DC_Comp <= DC_Comp + 7'd2;
-                        // DC_Comp <= DC_Comp + (DC_Comp>>1);
+                    else if (average>140) begin
+                        DC_Comp <= DC_Comp + 7'd3;
+                        // DC_Comp <= DC_Comp + ((DC_Comp-7'd90)>>1);
                         // DC_Comp = DC_Comp + ((135-average)>>1);
 
                         V_max <= 0;
@@ -168,7 +168,7 @@ module Controller_small (
                             // next_state <= PGA_RED_OUT;
                             next_state <= DC_IR;
                             PGA_Gain <= 4'd0;
-                                                
+                            DC_Comp <=  7'd127;                     
                         end
                     end   
             end
@@ -194,8 +194,8 @@ module Controller_small (
             //                 PGA_Gain <= 0;
             //                 V_max <= 0;
             //                 V_min <= 255;
-            //                 average <= 0; //在开始计算IRDC之前清空counter
-            //                 DC_Comp <= 100;  //让IR不要一开始就位移去奇怪地方
+            //                 average <= 0; //?????IRDC????counter
+            //                 DC_Comp <= 100;  //?IR?????????????
             //             end
             //     end
             // end
@@ -216,7 +216,7 @@ module Controller_small (
                             
             //                 V_max <= 0;
             //                 V_min <= 255;  
-            //                 DC_Comp <= 100;  //和IN里头一样
+            //                 DC_Comp <= 100;  //?IN????
             //                 average <= 0;                     
             //             end
                         
@@ -240,10 +240,10 @@ module Controller_small (
                 end
                 else begin
                     i<=0;
-                    average <= (V_max + V_min) >>1; 
-                    if (average<120) begin
-                        DC_Comp <= DC_Comp - 7'd5; 
-                        // DC_Comp <= DC_Comp - (DC_Comp>>1);
+                    average = (V_max + V_min) >>1; 
+                    if (average<110) begin
+                        DC_Comp <= DC_Comp - 7'd4; 
+                        // DC_Comp <= DC_Comp - ((DC_Comp-7'd90)>>1);
                         // DC_Comp = DC_Comp - ((120-average)>>1); 
 
                         V_max <= 0;
@@ -251,9 +251,9 @@ module Controller_small (
 
                     end
                         
-                    else if (average>135) begin
-                        DC_Comp <= DC_Comp + 7'd2; 
-                        // DC_Comp <= DC_Comp + (DC_Comp>>1); 
+                    else if (average>140) begin
+                        DC_Comp <= DC_Comp + 7'd3; 
+                        // DC_Comp <= DC_Comp + ((DC_Comp-7'd90)>>1); 
                         // DC_Comp = DC_Comp + ((135-average)>>1);  
 
                         V_max <= 0;
@@ -322,7 +322,7 @@ module Controller_small (
             //                 V_max <= 0;
             //                 V_min <= 255;
 
-            //                 DC_Comp <= 100;  //和IN里头一样
+            //                 DC_Comp <= 100;  //?IN????
             //                 average <= 0;
             //             end
             //     end
@@ -342,7 +342,7 @@ module Controller_small (
             //                 // @ (negedge CLK);
             //                 IR_PGA <= PGA_Gain;
             //                 PGA_Gain <= 0;
-            //                 DC_Comp <= 100;  //写100是因为这是初始值，但是感觉也可以写其他的，因为在下一个状态要被开始交替赋值了
+            //                 DC_Comp <= 100;  //?100??????????????????????????????????????
             //                 average <= 0;
             //                 V_max <= 0;
             //                 V_min <= 255;                       
