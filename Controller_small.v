@@ -1,6 +1,6 @@
 `timescale 1ms/1ps
 
-module Controller (
+module Controller_small (
     input  [7:0] ADC,
     input  Find_setting,
     input  CLK,
@@ -14,6 +14,9 @@ module Controller (
     output reg CLK_Filter,
     output reg [7:0] IR_ADC_Value,
     output reg [7:0] RED_ADC_Value
+
+    //output reg [19:0] Out_IR_Filtered,
+    //output reg [19:0] Out_RED_Filtered
 );
     
     reg [7:0] current_state;
@@ -52,8 +55,11 @@ module Controller (
     parameter HALF_ADC_PERIOD = 500;
 
     //clk_filter
-    always @(posedge CLK) begin
-        CLK_Filter <= ~CLK_Filter; 
+    always @(posedge CLK or negedge rst_n) begin
+        if(~rst_n)
+            CLK_Filter <= 1'd0;
+        else
+            CLK_Filter <= ~CLK_Filter;
     end    
 
 
@@ -76,7 +82,7 @@ module Controller (
             
             INITIAL: begin              
                 //@(negedge CLK)
-                CLK_Filter = 1'b0;
+                //CLK_Filter = 1'b0;
                 LED_DRIVE = 4'd10;  // fixed now, TODO later
                 DC_Comp = 7'd127;	// start somewhere
                 LED_IR = 1'b0;
@@ -89,13 +95,16 @@ module Controller (
                 RED_PGA = 4'b0;
                 IR_PGA = 4'b0;
 
-                Find_setting_Complete = 1'b0;
+                // Find_setting_Complete = 1'b0;
 
                 V_min = 255;
                 V_max = 0;
                 average = 0;
                 i = 0;
                 timer = 0;
+
+		//Out_IR_Filtered = 20'b0;
+		//Out_RED_Filtered = 20'b0;
 
                 next_state = DC_RED; //next_state = DC_RED;
             end
@@ -140,6 +149,7 @@ module Controller (
                         RED_DC_Comp = DC_Comp;
                         V_max = 0;
                         V_min = 255;
+                        average = 9'd0;
                         // PGA_Gain <= 4'd0;
                     end
                 end
@@ -168,8 +178,7 @@ module Controller (
                             // next_state <= PGA_RED_OUT;
                             next_state = DC_IR;
                             PGA_Gain = 4'd0;
-                            DC_Comp =  7'd64; 
-                                                
+                            DC_Comp =  7'd30;                     
                         end
                     end   
             end
@@ -234,6 +243,7 @@ module Controller (
                 LED_IR = 1'b1;
 
                 if (i<HALF_ADC_PERIOD) begin
+                    //@ (negedge CLK); 
                     V_max = (ADC > V_max)?  ADC:V_max;
                     V_min = (ADC < V_min)?  ADC:V_min;                   
                     i=i+1;
@@ -269,6 +279,7 @@ module Controller (
                         V_min = 255;
                         // DC_Comp = 0;
                         PGA_Gain = 4'd0;
+                        average = 9'd0;
                     end
                 end
             end 
@@ -357,40 +368,65 @@ module Controller (
             // end
 
             OPERATION: begin
-		        Find_setting_Complete  = 1'b1;      // flag signal for LED switching block
+		        //Find_setting_Complete  = 1'b1;      // flag signal for LED switching block
+                //if(Find_setting_Complete) begin // setting found, switch faster -> 100Hz, 10ms       
+                    if(timer == 9) begin
+                        timer = 0;
+                        LED_RED = ~LED_RED;
+                        LED_IR = ~LED_IR;	
+	 		if (LED_RED == 1 && LED_IR == 0) begin
+                            PGA_Gain = RED_PGA;
+                            DC_Comp = RED_DC_Comp;
+                        end 
+                        if (LED_RED == 0 && LED_IR == 1) begin
+                            PGA_Gain = IR_PGA;
+                            DC_Comp = IR_DC_Comp; 			
+                    	end 
 		    end
+		    else begin
+                        timer = timer + 1;       
+                        if (LED_RED == 1 && LED_IR == 0) begin
+                            RED_ADC_Value = ADC;
+        
+                        end 
 
-            default:    current_state = INITIAL ;
+                        if (LED_RED == 0 && LED_IR == 1) begin
+                            IR_ADC_Value = ADC;
+                    
+                        end
+                    end
+                end
+		    
+
+            default:    next_state = INITIAL ;
 
         endcase
     end
 
 
-    always @(posedge CLK) begin  
-        if(Find_setting_Complete) begin // setting found, switch faster -> 100Hz, 10ms       
-            if(timer == 9) begin
-                timer <= 0;
-                LED_RED <= ~LED_RED;
-                LED_IR <= ~LED_IR;
-            end else begin
-                timer <= timer + 1;       
-                if (LED_RED == 1 && LED_IR == 0) begin
-                    RED_ADC_Value <= ADC;
-                    PGA_Gain <= RED_PGA;
-                    DC_Comp <= RED_DC_Comp;
-                end 
+    // always @(posedge CLK) begin  
+    //     if(Find_setting_Complete) begin // setting found, switch faster -> 100Hz, 10ms       
+    //         if(timer == 9) begin
+    //             timer <= 0;
+    //             LED_RED <= ~LED_RED;
+    //             LED_IR <= ~LED_IR;
+    //         end else begin
+    //             timer <= timer + 1;       
+    //             if (LED_RED == 1 && LED_IR == 0) begin
+    //                 RED_ADC_Value <= ADC;
+    //                 PGA_Gain <= RED_PGA;
+    //                 DC_Comp <= RED_DC_Comp;
+    //             end 
 
-                if (LED_RED == 0 && LED_IR == 1) begin
-                    IR_ADC_Value <= ADC;
-                    PGA_Gain <= IR_PGA;
-                    DC_Comp <= IR_DC_Comp;           
-                end
-            end
-        end
+    //             if (LED_RED == 0 && LED_IR == 1) begin
+    //                 IR_ADC_Value <= ADC;
+    //                 PGA_Gain <= IR_PGA;
+    //                 DC_Comp <= IR_DC_Comp;           
+    //             end
+    //         end
+    //     end
         
-    end
+    // end
 endmodule
 
-
-
-            
+ 
