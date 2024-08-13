@@ -4,7 +4,7 @@
 >> adder : 21
 >> shift_reg : 21+1 = 22
 
->>the LED of the finger-clip needs to start alternating between
+>>the LED of the finger-clip needs to start alternating between 
 infrared and red with a frequency of 100 Hz. 10ms
 ************************************************************/
 
