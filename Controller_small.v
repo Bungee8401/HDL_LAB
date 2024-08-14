@@ -76,15 +76,15 @@ module Controller_small (
         end
     end
 
-    // assign values at neg CLK 
-    always @(posedge CLK) begin
+    // state output 
+    always @(posedge CLK) begin 
         case(current_state) 
             
             INITIAL: begin              
                 //@(negedge CLK)
                 //CLK_Filter = 1'b0;
                 LED_DRIVE = 4'd10;  // fixed now, TODO later
-                DC_Comp = 7'd63;	// start somewhere
+                DC_Comp = 7'd127;	// start somewhere
                 LED_IR = 1'b0;
                 LED_RED = 1'b0;
                 PGA_Gain = 4'd0;
@@ -103,8 +103,8 @@ module Controller_small (
                 i = 0;
                 timer = 0;
 
-		//Out_IR_Filtered = 20'b0;
-		//Out_RED_Filtered = 20'b0;
+                //Out_IR_Filtered = 20'b0;
+                //Out_RED_Filtered = 20'b0;
 
                 next_state = DC_RED; //next_state = DC_RED;
             end
@@ -144,8 +144,6 @@ module Controller_small (
                         
                     else begin
                         next_state = PGA_RED;
-                        // @ (negedge CLK);    
-                        i=0;
                         RED_DC_Comp = DC_Comp;
                         V_max = 0;
                         V_min = 255;
@@ -399,7 +397,7 @@ module Controller_small (
 		    
 
             default:    next_state = INITIAL ;
-
+        
         endcase
     end
 
