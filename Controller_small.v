@@ -84,7 +84,7 @@ module Controller_small (
                 //@(negedge CLK)
                 //CLK_Filter = 1'b0;
                 LED_DRIVE = 4'd10;  // fixed now, TODO later
-                DC_Comp = 7'd127;	// start somewhere
+                DC_Comp = 7'd63;	// start somewhere
                 LED_IR = 1'b0;
                 LED_RED = 1'b0;
                 PGA_Gain = 4'd0;
@@ -124,7 +124,7 @@ module Controller_small (
                 else begin
                     i=0;
                     average = (V_max + V_min) >>1; 
-                    if (average<110) begin
+                    if (average<116) begin
                         DC_Comp = DC_Comp - 7'd4;
                         // DC_Comp <= DC_Comp - ((DC_Comp-7'd90)>>1);
                         // DC_Comp = DC_Comp - ((120-average)>>1);
@@ -251,7 +251,7 @@ module Controller_small (
                 else begin
                     i=0;
                     average = (V_max + V_min) >>1; 
-                    if (average<110) begin
+                    if (average<116) begin
                         DC_Comp = DC_Comp - 7'd4; 
                         // DC_Comp <= DC_Comp - ((DC_Comp-7'd90)>>1);
                         // DC_Comp = DC_Comp - ((120-average)>>1); 
