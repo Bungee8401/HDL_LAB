@@ -1,7 +1,3 @@
-module FIR_test (
-
-);
-
 /***********************************************************
 used to test SDF backannotation
 1. if without en[2:0], modelsim
@@ -12,7 +8,7 @@ used to test SDF backannotation
 ************************************************************/
 `timescale 1ms/1ms
 
-module FIR_RED ( 
+module FIR_test ( 
 	input CLK_Filter,
 	input rst_n,
 	input  [7:0] RED_ADC_Value,
@@ -140,18 +136,5 @@ end
 // 		//en[2:0] <= {en[1:0], 1'b0};
 // 	end
 // end
-
-endmodule
-
-
-
-
-
-
-
-
-
-
-
 
 endmodule
