@@ -47,6 +47,7 @@ reg [19:0] add_temp1;
 reg [19:0] add_temp2;
 
 // en[2:0] shift
+
 always @(posedge CLK_Filter or negedge rst_n) begin
 	if(!rst_n)begin
 		en[2:0] <= 3'b001;
@@ -70,6 +71,11 @@ always @(posedge CLK_Filter or negedge rst_n) begin
 		for (i=0; i<=21; i=i+1) begin
 			in_shift[i] <= 7'd0; 
 		end
+        for (j=0; j<=10; j=j+1) begin
+			mul_reg[j] <= 20'd0;
+			//add_reg[j] <= 20'd0;
+		end
+        Out_RED_Filtered <= 20'd0;
 		//en[2:0] <= 3'b001;
 	end 
 	else if (1) begin //en[0]
@@ -79,50 +85,61 @@ always @(posedge CLK_Filter or negedge rst_n) begin
 			//$timeformat(-3, 0, "ns"); 
 			//$display("in_shift %b",in_shift[i]);
 		end
+
+        for (j=0; j<=10; j=j+1) begin
+			mul_reg[j] <= coeff[j] * (in_shift [j] + in_shift [21-j]); 
+			
+			// $display("mul_reg %b",mul_reg[j]);
+			// $display("coeff %b",coeff[j]);
+		end
+
+        add_temp1 <=  mul_reg[0] + mul_reg[1] + mul_reg[2] + mul_reg[3] + mul_reg[4] + mul_reg[5];
+			
+		add_temp2 <=  mul_reg[6] + mul_reg[7] + mul_reg[8] + mul_reg[9] + mul_reg[10];
+
+		Out_RED_Filtered <= add_temp1 + add_temp2;
+
 		//en[2:0] <= {en[1:0], 1'b0};
 	end
 end
 				
 //ADDER	
-always @(posedge CLK_Filter or negedge rst_n) begin
-	if(!rst_n)begin
-		for (j=0; j<=10; j=j+1) begin
-			mul_reg[j] <= 20'd0;
-			//add_reg[j] <= 20'd0;
-		end
-	end 
-	else if (1)begin // en[1]
-		for (j=0; j<=10; j=j+1) begin
-			mul_reg[j] <= coeff[j] * (in_shift [j] + in_shift [21-j]); 
+// always @(posedge CLK_Filter or negedge rst_n) begin
+// 	if(!rst_n)begin
+		
+// 	end 
+// 	else if (1)begin // en[1]
+// 		for (j=0; j<=10; j=j+1) begin
+// 			mul_reg[j] <= coeff[j] * (in_shift [j] + in_shift [21-j]); 
 			
 			
-			// $display("mul_reg %b",mul_reg[j]);
-			// $display("coeff %b",coeff[j]);
-		end
-		//en[2:0] <= {en[1:0], 1'b0};
-	end
-end
+// 			// $display("mul_reg %b",mul_reg[j]);
+// 			// $display("coeff %b",coeff[j]);
+// 		end
+// 		//en[2:0] <= {en[1:0], 1'b0};
+// 	end
+// end
 
 
-always @(posedge CLK_Filter or negedge rst_n) begin
+// always @(posedge CLK_Filter or negedge rst_n) begin
 
-	if(!rst_n)begin
-			Out_RED_Filtered <= 20'd0;
-	end 
-	else if (1) begin // en[2]
-		//$display ("enter!RED");
-		//for (j=0; j<=10; j=j+1) begin
-			//$display ("enter!RED forloop");
-		 	// Out_RED_Filtered <= Out_RED_Filtered + mul_reg[j];
-			//$display("Out_RED_Filtered %b",Out_RED_Filtered);
-		add_temp1 <=  mul_reg[0] + mul_reg[1] + mul_reg[2] + mul_reg[3] + mul_reg[4] + mul_reg[5];
+// 	if(!rst_n)begin
 			
-		add_temp2 <=  mul_reg[6] + mul_reg[7] + mul_reg[8] + mul_reg[9] + mul_reg[10];
-		Out_RED_Filtered <= add_temp1 + add_temp2;
-		//end
-		//en[2:0] <= {en[1:0], 1'b0};
-	end
-end
+// 	end 
+// 	else if (1) begin // en[2]
+// 		//$display ("enter!RED");
+// 		//for (j=0; j<=10; j=j+1) begin
+// 			//$display ("enter!RED forloop");
+// 		 	// Out_RED_Filtered <= Out_RED_Filtered + mul_reg[j];
+// 			//$display("Out_RED_Filtered %b",Out_RED_Filtered);
+// 		add_temp1 <=  mul_reg[0] + mul_reg[1] + mul_reg[2] + mul_reg[3] + mul_reg[4] + mul_reg[5];
+			
+// 		add_temp2 <=  mul_reg[6] + mul_reg[7] + mul_reg[8] + mul_reg[9] + mul_reg[10];
+// 		Out_RED_Filtered <= add_temp1 + add_temp2;
+// 		//end
+// 		//en[2:0] <= {en[1:0], 1'b0};
+// 	end
+// end
 
 endmodule
 
