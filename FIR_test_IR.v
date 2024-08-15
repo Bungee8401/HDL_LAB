@@ -8,12 +8,12 @@ used to test SDF backannotation
 ************************************************************/
 `timescale 1ms/1ms
 
-module FIR_test ( 
+module FIR_test_IR ( 
 	input CLK_Filter,
 	input rst_n,
-	input  [7:0] RED_ADC_Value,
+	input  [7:0] IR_ADC_Value,
 	
-	output reg [19:0] Out_RED_Filtered
+	output reg [19:0] Out_IR_Filtered
 	);
 
 //define coefficients 
@@ -75,7 +75,7 @@ always @(posedge CLK_Filter or negedge rst_n) begin
 		//en[2:0] <= 3'b001;
 	end 
 	else if (1) begin //en[0]
-		in_shift[0] <= RED_ADC_Value;
+		in_shift[0] <= IR_ADC_Value;
 		for (i=0; i<=21; i=i+1) begin
 			in_shift [i+1] <= in_shift[i];
 			//$timeformat(-3, 0, "ns"); 
@@ -93,7 +93,7 @@ always @(posedge CLK_Filter or negedge rst_n) begin
 			
 		add_temp2 <=  mul_reg[6] + mul_reg[7] + mul_reg[8] + mul_reg[9] + mul_reg[10];
 
-		Out_RED_Filtered <= add_temp1 + add_temp2;
+		Out_IR_Filtered <= add_temp1 + add_temp2;
 
 		//en[2:0] <= {en[1:0], 1'b0};
 	end
