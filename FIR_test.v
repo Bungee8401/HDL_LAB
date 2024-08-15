@@ -44,21 +44,21 @@ reg [19:0] add_temp2;
 
 // en[2:0] shift
 
-always @(posedge CLK_Filter or negedge rst_n) begin
-	if(!rst_n)begin
-		en[2:0] <= 3'b001;
-		k <= 0;
-	end else begin
-		k <= k+1;
-		if (k<=1) begin
-			en[2:0] <= {en[1:0], 1'b0};
-		end
-		else begin
-			k <= 0;
-			en[2:0] <= 3'b001;
-		end
-	end
-end
+// always @(posedge CLK_Filter or negedge rst_n) begin
+// 	if(!rst_n)begin
+// 		en[2:0] <= 3'b001;
+// 		k <= 0;
+// 	end else begin
+// 		k <= k+1;
+// 		if (k<=1) begin
+// 			en[2:0] <= {en[1:0], 1'b0};
+// 		end
+// 		else begin
+// 			k <= 0;
+// 			en[2:0] <= 3'b001;
+// 		end
+// 	end
+// end
 
 
 //22 shift_register, in_shift [21:0]
