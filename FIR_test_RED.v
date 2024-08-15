@@ -1,7 +1,7 @@
 /***********************************************************
 used to test SDF backannotation
-1. if without en[2:0], modelsim
-2. if in one always block, modelsim -> cadence
+1. if without en[2:0], modelsim -> works								
+2. if in one always block, modelsim -> works								
 3. see how to make it work in SDF, possible reasons could be:
     for loop not working properly
     <= property
