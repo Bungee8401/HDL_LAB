@@ -61,7 +61,7 @@ always @(posedge CLK_Filter or negedge rst_n) begin
 end
 
 // data buffer
-always @(posedge clk or negedge rst) begin
+always @(posedge CLK_Filter or negedge rst_n) begin
     if (!rst_n) begin
         data_in_buf <= 8'b0;
     end

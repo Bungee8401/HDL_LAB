@@ -52,7 +52,7 @@ always @(posedge CLK_Filter or negedge rst_n) begin
 	if(!rst_n)begin
 		en[2:0] <= 3'b001;
 		k <= 0;
-    end else if en begin
+	end else begin
 		k <= k+1;
 		if (k<=1) begin
 			en[2:0] <= {en[1:0], 1'b0};
