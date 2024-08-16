@@ -84,7 +84,7 @@ always @(posedge CLK_Filter or negedge rst_n) begin
             in_shift[20] <= 8'd0;
             in_shift[21] <= 8'd0; 
 	end 
-	else if (en[0]) begin
+	else if begin
 		in_shift[0] <= RED_ADC_Value;
 		in_shift[1] <= in_shift[0];
 		in_shift[2] <= in_shift[1];
@@ -125,7 +125,7 @@ always @(posedge CLK_Filter or negedge rst_n) begin
 			mul_reg[9] <= 20'd0;
 			mul_reg[10] <= 20'd0;
 	end 
-	else if (en[1])begin
+	else if (en[1]) begin
 			mul_reg[0] <= coeff[0] * (in_shift [0] + in_shift [21]); 
 			mul_reg[1] <= coeff[1] * (in_shift [1] + in_shift [20]); 
 			mul_reg[2] <= coeff[2] * (in_shift [2] + in_shift [19]); 

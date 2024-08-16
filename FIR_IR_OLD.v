@@ -84,7 +84,7 @@ always @(posedge CLK_Filter or negedge rst_n) begin
             in_shift[20] <= 8'd0;
             in_shift[21] <= 8'd0; 
 	end 
-	else if (en[0]) begin
+	else begin
 		in_shift[0] <= IR_ADC_Value;
 		in_shift[1] <= in_shift[0];
 		in_shift[2] <= in_shift[1];
