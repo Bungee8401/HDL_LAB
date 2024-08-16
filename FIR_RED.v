@@ -34,11 +34,6 @@ assign coeff[10]=8'd128;
 
 reg  [7:0] in_shift [21:0]; 
 reg  [19:0] mul_reg [10:0]; 
-// reg  [19:0] add_reg [10:0];
-
-// reg [7:0] i,j;
-// reg [7:0] k;
-// reg [2:0] en;
 
 reg [19:0] add_temp1;
 reg [19:0] add_temp2;
@@ -46,7 +41,7 @@ reg [19:0] add_temp2;
 
 //22 shift_register, in_shift [21:0]
 always @(posedge CLK_Filter or negedge rst_n) begin
-	if(!rst_n)begin
+	if(!rst_n)begin //initial all shift registers
 		in_shift[0] <= 8'd0;
 		in_shift[1] <= 8'd0;
 		in_shift[2] <= 8'd0;
@@ -70,7 +65,7 @@ always @(posedge CLK_Filter or negedge rst_n) begin
 		in_shift[20] <= 8'd0;
 		in_shift[21] <= 8'd0; 
 	end 
-	else begin
+	else begin //shift input data in
 		in_shift[0] <= RED_ADC_Value;
 		in_shift[1] <= in_shift[0];
 		in_shift[2] <= in_shift[1];
@@ -99,7 +94,7 @@ end
 				
 //ADDER	
 always @(posedge CLK_Filter or negedge rst_n) begin
-	if(!rst_n)begin		
+	if(!rst_n)begin		//initial all mul
 			mul_reg[0] <= 20'd0;
 			mul_reg[1] <= 20'd0;
 			mul_reg[2] <= 20'd0;
@@ -112,7 +107,7 @@ always @(posedge CLK_Filter or negedge rst_n) begin
 			mul_reg[9] <= 20'd0;
 			mul_reg[10] <= 20'd0;
 	end 
-	else begin		
+	else begin		//Add the symmetric parts and multiply by the filter coefficients
 			mul_reg[0] <= coeff[0] * (in_shift [0] + in_shift [21]); 
 			mul_reg[1] <= coeff[1] * (in_shift [1] + in_shift [20]); 
 			mul_reg[2] <= coeff[2] * (in_shift [2] + in_shift [19]); 
@@ -133,7 +128,7 @@ always @(posedge CLK_Filter or negedge rst_n) begin
 		add_temp1 <= 20'd0;
 		add_temp2 <= 20'd0;
 	end 
-	else begin
+	else begin  //sum results and output
 		add_temp1 <=  mul_reg[0] + mul_reg[1] + mul_reg[2] + mul_reg[3] + mul_reg[4] + mul_reg[5];
 		add_temp2 <=  mul_reg[6] + mul_reg[7] + mul_reg[8] + mul_reg[9] + mul_reg[10];
 		Out_RED_Filtered <= add_temp1 + add_temp2;
