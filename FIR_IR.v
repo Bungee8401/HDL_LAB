@@ -100,17 +100,17 @@ end
 //ADDER	
 always @(posedge CLK_Filter or negedge rst_n) begin
 	if(!rst_n)begin		
-			mul_regj[0] <= 20'd0;
-			mul_regj[1] <= 20'd0;
-			mul_regj[2] <= 20'd0;
-			mul_regj[3] <= 20'd0;
-			mul_regj[4] <= 20'd0;
-			mul_regj[5] <= 20'd0;
-			mul_regj[6] <= 20'd0;
-			mul_regj[7] <= 20'd0;
-			mul_regj[8] <= 20'd0;
-			mul_regj[9] <= 20'd0;
-			mul_regj[10] <= 20'd0;
+			mul_reg[0] <= 20'd0;
+			mul_reg[1] <= 20'd0;
+			mul_reg[2] <= 20'd0;
+			mul_reg[3] <= 20'd0;
+			mul_reg[4] <= 20'd0;
+			mul_reg[5] <= 20'd0;
+			mul_reg[6] <= 20'd0;
+			mul_reg[7] <= 20'd0;
+			mul_reg[8] <= 20'd0;
+			mul_reg[9] <= 20'd0;
+			mul_reg[10] <= 20'd0;
 	end 
 	else begin		
 			mul_reg[0] <= coeff[0] * (in_shift [0] + in_shift [21]); 
