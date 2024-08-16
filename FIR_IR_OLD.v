@@ -66,7 +66,7 @@ end
 
 // data buffer
 always @(posedge clk or negedge rst) begin
-    if (!rst) begin
+    if (!rst_n) begin
         data_in_buf <= 8'b0;
     end
     else begin
