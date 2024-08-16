@@ -41,6 +41,8 @@ reg [2:0] en;
 reg [19:0] add_temp1;
 reg [19:0] add_temp2;
 
+reg signed [7:0] data_in_buf;// define input data buffer
+
 // en[2:0] shift
 always @(posedge CLK_Filter or negedge rst_n) begin
 	if(!rst_n)begin
@@ -56,6 +58,16 @@ always @(posedge CLK_Filter or negedge rst_n) begin
 			en[2:0] <= 3'b001;
 		end
 	end
+end
+
+// data buffer
+always @(posedge clk or negedge rst) begin
+    if (!rst) begin
+        data_in_buf <= 8'b0;
+    end
+    else begin
+        data_in_buf <= IR_ADC_Value;
+    end
 end
 
 //22 shift_register, in_shift [21:0]
