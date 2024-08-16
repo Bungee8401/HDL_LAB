@@ -1,0 +1,414 @@
+ 
+****************************************
+Report : reference
+Design : Controller_top
+Version: R-2020.09-SP2
+Date   : Fri Aug 16 16:12:54 2024
+****************************************
+
+Attributes:
+    b - black box (unknown)
+   bo - allows boundary optimization
+    d - dont_touch
+   mo - map_only
+    h - hierarchical
+    n - noncombinational
+    r - removable
+    s - synthetic operator
+    u - contains unmapped logic
+
+Reference          Library       Unit Area   Count    Total Area   Attributes
+-----------------------------------------------------------------------------
+ADFM1RA            uk65lscllmvbbr_108c125_wc
+                                  7.560000       2     15.120000  r
+ADFM1SA            uk65lscllmvbbh_108c125_wc
+                                  7.560000      33    249.479998  r
+ADFM2SA            uk65lscllmvbbh_108c125_wc
+                                  7.560000     497   3757.319972  r
+ADHM1RA            uk65lscllmvbbr_108c125_wc
+                                  5.760000       2     11.520000  r
+ADHM1SA            uk65lscllmvbbh_108c125_wc
+                                  5.760000       1      5.760000  r
+ADHM2RA            uk65lscllmvbbr_108c125_wc
+                                  6.120000       3     18.360000  r
+AN2M1R             uk65lscllmvbbr_108c125_wc
+                                  2.160000       1      2.160000  
+AN2M1S             uk65lscllmvbbh_108c125_wc
+                                  2.160000      48    103.680004  
+AN2M2R             uk65lscllmvbbr_108c125_wc
+                                  2.160000      18     38.880002  
+AN2M4R             uk65lscllmvbbr_108c125_wc
+                                  2.520000       4     10.080000  
+AN2M4W             uk65lscllmvbbl_108c125_wc
+                                  2.520000       2      5.040000  
+AN2M6W             uk65lscllmvbbl_108c125_wc
+                                  3.600000       1      3.600000  
+AN2M8W             uk65lscllmvbbl_108c125_wc
+                                  4.320000       1      4.320000  
+AN2M16WA           uk65lscllmvbbl_108c125_wc
+                                  7.200000       2     14.400000  
+AO21M1SA           uk65lscllmvbbh_108c125_wc
+                                  2.520000      18     45.360000  
+AO21M2RA           uk65lscllmvbbr_108c125_wc
+                                  2.520000       3      7.560000  
+AO21M2SA           uk65lscllmvbbh_108c125_wc
+                                  2.520000       1      2.520000  
+AO21M4RA           uk65lscllmvbbr_108c125_wc
+                                  2.880000       1      2.880000  
+AO21M12WA          uk65lscllmvbbl_108c125_wc
+                                  7.560000       1      7.560000  
+AOI21B01M1R        uk65lscllmvbbr_108c125_wc
+                                  2.880000       2      5.760000  
+AOI21B01M2W        uk65lscllmvbbl_108c125_wc
+                                  2.880000       1      2.880000  
+AOI21B20M1S        uk65lscllmvbbh_108c125_wc
+                                  2.520000      50    125.999999  
+AOI21M1R           uk65lscllmvbbr_108c125_wc
+                                  2.160000       2      4.320000  
+AOI21M1S           uk65lscllmvbbh_108c125_wc
+                                  2.160000      42     90.720004  
+AOI21M2R           uk65lscllmvbbr_108c125_wc
+                                  2.160000       7     15.120001  
+AOI21M2S           uk65lscllmvbbh_108c125_wc
+                                  2.160000       2      4.320000  
+AOI21M4R           uk65lscllmvbbr_108c125_wc
+                                  3.240000       1      3.240000  
+AOI21M4W           uk65lscllmvbbl_108c125_wc
+                                  3.240000       9     29.160000  
+AOI21M6W           uk65lscllmvbbl_108c125_wc
+                                  4.680000       1      4.680000  
+AOI21M16WA         uk65lscllmvbbl_108c125_wc
+                                 11.880000       1     11.880000  
+AOI22M1R           uk65lscllmvbbr_108c125_wc
+                                  2.520000       1      2.520000  
+AOI22M1S           uk65lscllmvbbh_108c125_wc
+                                  2.520000       8     20.160000  
+AOI22M2R           uk65lscllmvbbr_108c125_wc
+                                  2.520000       4     10.080000  
+AOI22M4W           uk65lscllmvbbl_108c125_wc
+                                  4.320000       1      4.320000  
+AOI22M6RA          uk65lscllmvbbr_108c125_wc
+                                  6.120000       2     12.240000  
+AOI22M8RA          uk65lscllmvbbr_108c125_wc
+                                  7.920000       1      7.920000  
+AOI22M16WA         uk65lscllmvbbl_108c125_wc
+                                 15.480000       1     15.480000  
+AOI31M4W           uk65lscllmvbbl_108c125_wc
+                                  4.320000       1      4.320000  
+AOI31M6WA          uk65lscllmvbbl_108c125_wc
+                                  6.120000       2     12.240000  
+AOI211M2S          uk65lscllmvbbh_108c125_wc
+                                  2.520000       2      5.040000  
+BUFM2S             uk65lscllmvbbh_108c125_wc
+                                  1.440000       1      1.440000  
+BUFM8R             uk65lscllmvbbr_108c125_wc
+                                  3.240000       1      3.240000  
+BUFM12W            uk65lscllmvbbl_108c125_wc
+                                  4.320000       1      4.320000  
+BUFM26WA           uk65lscllmvbbl_108c125_wc
+                                  8.640000       1      8.640000  
+BUFM32WA           uk65lscllmvbbl_108c125_wc
+                                 10.440000       1     10.440000  
+BUFM48RA           uk65lscllmvbbr_108c125_wc
+                                 15.120000       2     30.240000  
+BUFM48WA           uk65lscllmvbbl_108c125_wc
+                                 15.120000       1     15.120000  
+CKAN2M6W           uk65lscllmvbbl_108c125_wc
+                                  2.880000       3      8.640000  
+CKINVM2R           uk65lscllmvbbr_108c125_wc
+                                  1.080000       9      9.720000  
+CKINVM6R           uk65lscllmvbbr_108c125_wc
+                                  2.160000       1      2.160000  
+CKND2M2W           uk65lscllmvbbl_108c125_wc
+                                  1.440000       8     11.520000  
+CKND2M4W           uk65lscllmvbbl_108c125_wc
+                                  2.520000       9     22.680000  
+CKND2M6WA          uk65lscllmvbbl_108c125_wc
+                                  3.240000       2      6.480000  
+CKND2M8W           uk65lscllmvbbl_108c125_wc
+                                  4.320000       2      8.640000  
+DFQM1RA            uk65lscllmvbbr_108c125_wc
+                                  6.840000       2     13.680000  n
+DFQM1SA            uk65lscllmvbbh_108c125_wc
+                                  6.840000      17    116.280003  n
+DFQM2RA            uk65lscllmvbbr_108c125_wc
+                                  6.840000      13     88.920002  n
+DFQM2WA            uk65lscllmvbbl_108c125_wc
+                                  6.840000      26    177.840004  n
+DFQM4RA            uk65lscllmvbbr_108c125_wc
+                                  7.200000       2     14.400000  n
+DFQM4WA            uk65lscllmvbbl_108c125_wc
+                                  7.200000       3     21.599999  n
+DFQM8WA            uk65lscllmvbbl_108c125_wc
+                                  8.280000      17    140.759995  n
+DFQRM1SA           uk65lscllmvbbh_108c125_wc
+                                  7.920000     746   5908.320057  n
+DFQRM2WA           uk65lscllmvbbl_108c125_wc
+                                  7.920000       4     31.680000  n
+DFQRM4SA           uk65lscllmvbbh_108c125_wc
+                                  9.000000       1      9.000000  n
+DFQRM8WA           uk65lscllmvbbl_108c125_wc
+                                 10.080000       1     10.080000  n
+DFQSM8WA           uk65lscllmvbbl_108c125_wc
+                                  9.720000       1      9.720000  n
+INVM1R             uk65lscllmvbbr_108c125_wc
+                                  1.080000       6      6.480000  
+INVM1S             uk65lscllmvbbh_108c125_wc
+                                  1.080000     174    187.920007  
+INVM2R             uk65lscllmvbbr_108c125_wc
+                                  1.080000      30     32.400001  
+INVM2S             uk65lscllmvbbh_108c125_wc
+                                  1.080000      52     56.160002  
+INVM2W             uk65lscllmvbbl_108c125_wc
+                                  1.080000       2      2.160000  
+INVM3R             uk65lscllmvbbr_108c125_wc
+                                  1.440000       1      1.440000  
+INVM4R             uk65lscllmvbbr_108c125_wc
+                                  1.440000       7     10.080000  
+INVM4W             uk65lscllmvbbl_108c125_wc
+                                  1.440000       4      5.760000  
+INVM6R             uk65lscllmvbbr_108c125_wc
+                                  2.160000       3      6.480000  
+INVM6S             uk65lscllmvbbh_108c125_wc
+                                  2.160000       1      2.160000  
+INVM6W             uk65lscllmvbbl_108c125_wc
+                                  2.160000       1      2.160000  
+INVM8R             uk65lscllmvbbr_108c125_wc
+                                  2.520000       2      5.040000  
+INVM8W             uk65lscllmvbbl_108c125_wc
+                                  2.520000       3      7.560000  
+INVM10R            uk65lscllmvbbr_108c125_wc
+                                  2.880000       3      8.640000  
+INVM14W            uk65lscllmvbbl_108c125_wc
+                                  3.960000       3     11.880000  
+INVM16S            uk65lscllmvbbh_108c125_wc
+                                  4.320000       1      4.320000  
+INVM18R            uk65lscllmvbbr_108c125_wc
+                                  4.680000       1      4.680000  
+INVM18W            uk65lscllmvbbl_108c125_wc
+                                  4.680000       1      4.680000  
+INVM22WA           uk65lscllmvbbl_108c125_wc
+                                  5.760000       1      5.760000  
+INVM32S            uk65lscllmvbbh_108c125_wc
+                                  7.920000       1      7.920000  
+MAOI22M1SA         uk65lscllmvbbh_108c125_wc
+                                  2.880000      36    103.680004  
+MAOI222M1SA        uk65lscllmvbbh_108c125_wc
+                                  2.880000       8     23.040001  
+MUX2M1RA           uk65lscllmvbbr_108c125_wc
+                                  3.600000       1      3.600000  
+MUX2M2RA           uk65lscllmvbbr_108c125_wc
+                                  3.960000       2      7.920000  
+MUX2M3RA           uk65lscllmvbbr_108c125_wc
+                                  4.320000       1      4.320000  
+MUX2M4WA           uk65lscllmvbbl_108c125_wc
+                                  4.320000       1      4.320000  
+MXB2M6WA           uk65lscllmvbbl_108c125_wc
+                                  6.840000      25    171.000004  
+ND2B1M2R           uk65lscllmvbbr_108c125_wc
+                                  2.160000       3      6.480000  
+ND2B1M2W           uk65lscllmvbbl_108c125_wc
+                                  2.160000       1      2.160000  
+ND2B1M4R           uk65lscllmvbbr_108c125_wc
+                                  2.880000       4     11.520000  
+ND2B1M4W           uk65lscllmvbbl_108c125_wc
+                                  2.880000       3      8.640000  
+ND2B1M6WA          uk65lscllmvbbl_108c125_wc
+                                  3.960000       2      7.920000  
+ND2B1M8W           uk65lscllmvbbl_108c125_wc
+                                  5.400000       1      5.400000  
+ND2B1M12RA         uk65lscllmvbbr_108c125_wc
+                                  7.200000       1      7.200000  
+ND2B1M12WA         uk65lscllmvbbl_108c125_wc
+                                  7.200000       2     14.400000  
+ND2B1M16WA         uk65lscllmvbbl_108c125_wc
+                                  9.000000       2     18.000000  
+ND2M1R             uk65lscllmvbbr_108c125_wc
+                                  1.440000       7     10.080000  
+ND2M1S             uk65lscllmvbbh_108c125_wc
+                                  1.440000      56     80.640003  
+ND2M1W             uk65lscllmvbbl_108c125_wc
+                                  1.440000       2      2.880000  
+ND2M2R             uk65lscllmvbbr_108c125_wc
+                                  1.440000      16     23.040001  
+ND2M2S             uk65lscllmvbbh_108c125_wc
+                                  1.440000       9     12.960001  
+ND2M2W             uk65lscllmvbbl_108c125_wc
+                                  1.440000       1      1.440000  
+ND2M3R             uk65lscllmvbbr_108c125_wc
+                                  2.520000       3      7.560000  
+ND2M3W             uk65lscllmvbbl_108c125_wc
+                                  2.520000       1      2.520000  
+ND2M4R             uk65lscllmvbbr_108c125_wc
+                                  2.520000       4     10.080000  
+ND2M4W             uk65lscllmvbbl_108c125_wc
+                                  2.520000      18     45.360000  
+ND2M5R             uk65lscllmvbbr_108c125_wc
+                                  3.240000       1      3.240000  
+ND2M6R             uk65lscllmvbbr_108c125_wc
+                                  3.240000       1      3.240000  
+ND2M6W             uk65lscllmvbbl_108c125_wc
+                                  3.240000       6     19.440000  
+ND2M8W             uk65lscllmvbbl_108c125_wc
+                                  4.320000       8     34.560001  
+ND2M12WA           uk65lscllmvbbl_108c125_wc
+                                  6.120000       3     18.360000  
+ND2M16WA           uk65lscllmvbbl_108c125_wc
+                                  7.920000      12     95.040001  
+ND3B1M2W           uk65lscllmvbbl_108c125_wc
+                                  2.520000       1      2.520000  
+ND3M2R             uk65lscllmvbbr_108c125_wc
+                                  2.160000       1      2.160000  
+ND3M2W             uk65lscllmvbbl_108c125_wc
+                                  2.160000       2      4.320000  
+ND3M4RA            uk65lscllmvbbr_108c125_wc
+                                  3.240000       1      3.240000  
+ND3M4WA            uk65lscllmvbbl_108c125_wc
+                                  3.240000       1      3.240000  
+ND3M8WA            uk65lscllmvbbl_108c125_wc
+                                  6.120000       1      6.120000  
+ND3M12WA           uk65lscllmvbbl_108c125_wc
+                                  9.000000       2     18.000000  
+ND3M16WA           uk65lscllmvbbl_108c125_wc
+                                 11.880000       1     11.880000  
+ND4M2W             uk65lscllmvbbl_108c125_wc
+                                  2.520000       1      2.520000  
+ND4M6W             uk65lscllmvbbl_108c125_wc
+                                  6.120000       3     18.360000  
+ND4M16RA           uk65lscllmvbbr_108c125_wc
+                                  7.920000       1      7.920000  
+NR2B1M1S           uk65lscllmvbbh_108c125_wc
+                                  2.160000       1      2.160000  
+NR2B1M2R           uk65lscllmvbbr_108c125_wc
+                                  2.160000       3      6.480000  
+NR2B1M2W           uk65lscllmvbbl_108c125_wc
+                                  2.160000       2      4.320000  
+NR2B1M4R           uk65lscllmvbbr_108c125_wc
+                                  2.880000       5     14.400001  
+NR2B1M4W           uk65lscllmvbbl_108c125_wc
+                                  2.880000       5     14.400001  
+NR2B1M6RA          uk65lscllmvbbr_108c125_wc
+                                  3.960000       1      3.960000  
+NR2B1M6WA          uk65lscllmvbbl_108c125_wc
+                                  3.960000       3     11.880000  
+NR2B1M8W           uk65lscllmvbbl_108c125_wc
+                                  5.400000       1      5.400000  
+NR2B1M12WA         uk65lscllmvbbl_108c125_wc
+                                  7.200000       1      7.200000  
+NR2B1M16WA         uk65lscllmvbbl_108c125_wc
+                                  9.000000       3     27.000000  
+NR2M1S             uk65lscllmvbbh_108c125_wc
+                                  1.440000      63     90.720004  
+NR2M2R             uk65lscllmvbbr_108c125_wc
+                                  1.440000      24     34.560001  
+NR2M2S             uk65lscllmvbbh_108c125_wc
+                                  1.440000       9     12.960001  
+NR2M2W             uk65lscllmvbbl_108c125_wc
+                                  1.440000       6      8.640000  
+NR2M4R             uk65lscllmvbbr_108c125_wc
+                                  2.520000       1      2.520000  
+NR2M4W             uk65lscllmvbbl_108c125_wc
+                                  2.520000       3      7.560000  
+NR2M6R             uk65lscllmvbbr_108c125_wc
+                                  3.240000       1      3.240000  
+NR2M6W             uk65lscllmvbbl_108c125_wc
+                                  3.240000       2      6.480000  
+NR2M8W             uk65lscllmvbbl_108c125_wc
+                                  4.320000       3     12.960001  
+NR2M16WA           uk65lscllmvbbl_108c125_wc
+                                  7.920000       1      7.920000  
+NR3B1M2R           uk65lscllmvbbr_108c125_wc
+                                  2.520000       1      2.520000  
+NR3B1M2W           uk65lscllmvbbl_108c125_wc
+                                  2.520000       2      5.040000  
+NR3M1S             uk65lscllmvbbh_108c125_wc
+                                  2.160000       2      4.320000  
+NR3M4W             uk65lscllmvbbl_108c125_wc
+                                  3.240000       1      3.240000  
+NR4M1R             uk65lscllmvbbr_108c125_wc
+                                  2.520000       2      5.040000  
+OA21M1SA           uk65lscllmvbbh_108c125_wc
+                                  2.520000      26     65.520000  
+OA21M2RA           uk65lscllmvbbr_108c125_wc
+                                  2.520000       1      2.520000  
+OA21M8RA           uk65lscllmvbbr_108c125_wc
+                                  5.760000       1      5.760000  
+OA21M16WA          uk65lscllmvbbl_108c125_wc
+                                 10.440000       1     10.440000  
+OAI21B01M1S        uk65lscllmvbbh_108c125_wc
+                                  2.880000       2      5.760000  
+OAI21B01M16WA      uk65lscllmvbbl_108c125_wc
+                                 13.320000       1     13.320000  
+OAI21B20M8WA       uk65lscllmvbbl_108c125_wc
+                                  5.400000       2     10.800000  
+OAI21B20M12WA      uk65lscllmvbbl_108c125_wc
+                                  9.000000       1      9.000000  
+OAI21M1R           uk65lscllmvbbr_108c125_wc
+                                  2.160000       2      4.320000  
+OAI21M1S           uk65lscllmvbbh_108c125_wc
+                                  2.160000      24     51.840002  
+OAI21M2R           uk65lscllmvbbr_108c125_wc
+                                  2.160000      10     21.600001  
+OAI21M2W           uk65lscllmvbbl_108c125_wc
+                                  2.160000       1      2.160000  
+OAI21M4R           uk65lscllmvbbr_108c125_wc
+                                  3.240000       3      9.720000  
+OAI21M4W           uk65lscllmvbbl_108c125_wc
+                                  3.240000       2      6.480000  
+OAI21M6R           uk65lscllmvbbr_108c125_wc
+                                  4.680000       1      4.680000  
+OAI21M6W           uk65lscllmvbbl_108c125_wc
+                                  4.680000       1      4.680000  
+OAI21M16WA         uk65lscllmvbbl_108c125_wc
+                                 11.880000       1     11.880000  
+OAI22M2R           uk65lscllmvbbr_108c125_wc
+                                  2.520000       4     10.080000  
+OAI22M2W           uk65lscllmvbbl_108c125_wc
+                                  2.520000       5     12.600000  
+OAI22M4R           uk65lscllmvbbr_108c125_wc
+                                  4.320000       1      4.320000  
+OAI22M4W           uk65lscllmvbbl_108c125_wc
+                                  4.320000      16     69.120003  
+OAI22M6WA          uk65lscllmvbbl_108c125_wc
+                                  6.120000       8     48.959999  
+OAI22M8RA          uk65lscllmvbbr_108c125_wc
+                                  7.920000       1      7.920000  
+OAI22M8WA          uk65lscllmvbbl_108c125_wc
+                                  7.920000       7     55.440001  
+OAI22M16WA         uk65lscllmvbbl_108c125_wc
+                                 15.480000       1     15.480000  
+OAI31M1S           uk65lscllmvbbh_108c125_wc
+                                  2.520000       2      5.040000  
+OAI33M1S           uk65lscllmvbbh_108c125_wc
+                                  3.240000       2      6.480000  
+OAI211B100M4W      uk65lscllmvbbl_108c125_wc
+                                  5.040000       1      5.040000  
+OR2M1R             uk65lscllmvbbr_108c125_wc
+                                  2.160000       3      6.480000  
+OR2M2R             uk65lscllmvbbr_108c125_wc
+                                  2.160000       7     15.120001  
+OR2M2W             uk65lscllmvbbl_108c125_wc
+                                  2.160000       1      2.160000  
+OR2M4R             uk65lscllmvbbr_108c125_wc
+                                  2.520000       3      7.560000  
+OR2M4W             uk65lscllmvbbl_108c125_wc
+                                  2.520000       3      7.560000  
+OR2M6W             uk65lscllmvbbl_108c125_wc
+                                  3.600000       4     14.400000  
+OR2M12WA           uk65lscllmvbbl_108c125_wc
+                                  6.120000       1      6.120000  
+OR2M22WA           uk65lscllmvbbl_108c125_wc
+                                 10.440000       1     10.440000  
+XNR2M1RA           uk65lscllmvbbr_108c125_wc
+                                  3.600000       1      3.600000  
+XNR2M2RA           uk65lscllmvbbr_108c125_wc
+                                  3.600000      10     35.999999  
+XNR2M2WA           uk65lscllmvbbl_108c125_wc
+                                  3.600000       3     10.800000  
+XOR2M2RA           uk65lscllmvbbr_108c125_wc
+                                  3.600000       7     25.199999  
+XOR2M4WA           uk65lscllmvbbl_108c125_wc
+                                  3.960000       2      7.920000  
+-----------------------------------------------------------------------------
+Total 195 references                                13546.800080
+1

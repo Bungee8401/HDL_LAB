@@ -1,0 +1,70 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : Controller_top
+Version: R-2020.09-SP2
+Date   : Fri Aug 16 14:02:59 2024
+****************************************
+
+Operating Conditions: uk65lscllmvbbh_108c125_wc   Library: uk65lscllmvbbh_108c125_wc
+Wire Load Model Mode: top
+
+  Startpoint: ins1_V_min_reg_0_
+              (rising edge-triggered flip-flop clocked by CLOCK)
+  Endpoint: ins1_DC_Comp_reg_6_
+            (rising edge-triggered flip-flop clocked by CLOCK)
+  Path Group: CLOCK
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  Controller_top     wl10                  uk65lscllmvbbh_108c125_wc
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock CLOCK (rise edge)                                 0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  ins1_V_min_reg_0_/CK (DFQM1SA)                          0.00       0.00 r
+  ins1_V_min_reg_0_/Q (DFQM1SA)                           0.51       0.51 r
+  U679/Z (INVM1S)                                         0.28       0.79 f
+  U680/Z (NR2M1S)                                         0.38       1.17 r
+  U683/Z (OAI21B10M1S)                                    0.58       1.74 r
+  U409/Z (MAO222M1SA)                                     0.61       2.35 r
+  intadd_34_U6/CO (ADFM1SA)                               0.39       2.74 r
+  intadd_34_U5/CO (ADFM1SA)                               0.38       3.12 r
+  intadd_34_U4/CO (ADFM1SA)                               0.38       3.51 r
+  intadd_34_U3/CO (ADFM1SA)                               0.38       3.89 r
+  intadd_34_U2/S (ADFM1SA)                                0.57       4.46 f
+  U676/Z (AOI31M1S)                                       0.40       4.86 r
+  U934/Z (NR2B1M4S)                                       0.67       5.53 r
+  U1204/Z (INVM1S)                                        0.33       5.86 f
+  U1205/Z (OAI21M1S)                                      0.36       6.23 r
+  DP_OP_338J1_143_5787_U8/CO (ADFM1SA)                    0.59       6.81 r
+  DP_OP_338J1_143_5787_U7/CO (ADFM1SA)                    0.43       7.24 r
+  U745/Z (AN2M1S)                                         0.38       7.62 r
+  DP_OP_338J1_143_5787_U5/CO (ADFM1SA)                    0.42       8.04 r
+  DP_OP_338J1_143_5787_U4/CO (ADFM1SA)                    0.38       8.42 r
+  DP_OP_338J1_143_5787_U3/CO (ADFM1SA)                    0.38       8.80 r
+  U1172/Z (MXB2M1SA)                                      0.25       9.05 r
+  U1173/Z (CKXOR2M1SA)                                    0.47       9.53 f
+  U1186/Z (OAI211M1S)                                     0.29       9.82 r
+  ins1_DC_Comp_reg_6_/D (DFQM1SA)                         0.00       9.82 r
+  data arrival time                                                  9.82
+
+  clock CLOCK (rise edge)                             1000000.00 1000000.00
+  clock network delay (ideal)                             0.00   1000000.00
+  clock uncertainty                                      -0.03   1000000.00
+  ins1_DC_Comp_reg_6_/CK (DFQM1SA)                        0.00   1000000.00 r
+  library setup time                                     -0.16   999999.81
+  data required time                                             999999.81
+  --------------------------------------------------------------------------
+  data required time                                             999999.81
+  data arrival time                                                 -9.82
+  --------------------------------------------------------------------------
+  slack (MET)                                                    999990.00
+
+
+1

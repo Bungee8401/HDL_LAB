@@ -1,0 +1,32 @@
+ 
+****************************************
+Report : area
+Design : Controller_top
+Version: R-2020.09-SP2
+Date   : Fri Aug 16 16:12:54 2024
+****************************************
+
+Library(s) Used:
+
+    uk65lscllmvbbh_108c125_wc (File: /cad/synopsys/libs/UMC_65_LL/synopsys/ccs/uk65lscllmvbbh_108c125_wc_ccs.db)
+    uk65lscllmvbbl_108c125_wc (File: /cad/synopsys/libs/UMC_65_LL/synopsys/ccs/uk65lscllmvbbl_108c125_wc_ccs.db)
+    uk65lscllmvbbr_108c125_wc (File: /cad/synopsys/libs/UMC_65_LL/synopsys/ccs/uk65lscllmvbbr_108c125_wc_ccs.db)
+
+Number of ports:                           64
+Number of nets:                          3077
+Number of cells:                         2528
+Number of combinational cells:           1695
+Number of sequential cells:               833
+Number of macros/black boxes:               0
+Number of buf/inv:                        315
+Number of references:                     195
+
+Combinational area:               7004.520019
+Buf/Inv area:                      459.000013
+Noncombinational area:            6542.280061
+Macro/Black Box area:                0.000000
+Net Interconnect area:           12864.415953
+
+Total cell area:                 13546.800080
+Total area:                      26411.216033
+1

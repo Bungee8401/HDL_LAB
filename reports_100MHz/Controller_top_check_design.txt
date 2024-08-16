@@ -1,0 +1,43 @@
+ 
+****************************************
+check_design summary:
+Version:     R-2020.09-SP2
+Date:        Fri Aug 16 14:39:48 2024
+****************************************
+
+                   Name                                            Total
+--------------------------------------------------------------------------------
+Inputs/Outputs                                                      4
+    Unconnected ports (LINT-28)                                     4
+
+Cells                                                              15
+    Cells do not drive (LINT-1)                                    15
+
+Nets                                                                4
+    Unloaded nets (LINT-2)                                          4
+--------------------------------------------------------------------------------
+
+Warning: In design 'Controller_small', cell 'C2046' does not drive any nets. (LINT-1)
+Warning: In design 'Controller_small', cell 'C2056' does not drive any nets. (LINT-1)
+Warning: In design 'Controller_small', cell 'C2105' does not drive any nets. (LINT-1)
+Warning: In design 'Controller_small', cell 'C2113' does not drive any nets. (LINT-1)
+Warning: In design 'Controller_small', cell 'C2197' does not drive any nets. (LINT-1)
+Warning: In design 'Controller_small', cell 'C2201' does not drive any nets. (LINT-1)
+Warning: In design 'Controller_small', cell 'C2211' does not drive any nets. (LINT-1)
+Warning: In design 'Controller_small', cell 'C2260' does not drive any nets. (LINT-1)
+Warning: In design 'Controller_small', cell 'C2268' does not drive any nets. (LINT-1)
+Warning: In design 'Controller_small', cell 'C2352' does not drive any nets. (LINT-1)
+Warning: In design 'Controller_small', cell 'C2353' does not drive any nets. (LINT-1)
+Warning: In design 'Controller_small', cell 'C2403' does not drive any nets. (LINT-1)
+Warning: In design 'Controller_small', cell 'C2406' does not drive any nets. (LINT-1)
+Warning: In design 'FIR_IR', cell 'B_0' does not drive any nets. (LINT-1)
+Warning: In design 'FIR_RED', cell 'B_0' does not drive any nets. (LINT-1)
+Warning: In design 'Controller_top', net 'LED_DRIVE[0]' driven by pin 'ins1/LED_DRIVE[0]' has no loads. (LINT-2)
+Warning: In design 'Controller_top', net 'LED_DRIVE[1]' driven by pin 'ins1/LED_DRIVE[1]' has no loads. (LINT-2)
+Warning: In design 'Controller_top', net 'LED_DRIVE[2]' driven by pin 'ins1/LED_DRIVE[2]' has no loads. (LINT-2)
+Warning: In design 'Controller_top', net 'LED_DRIVE[3]' driven by pin 'ins1/LED_DRIVE[3]' has no loads. (LINT-2)
+Warning: In design 'Controller_small', port 'LED_DRIVE[3]' is not connected to any nets. (LINT-28)
+Warning: In design 'Controller_small', port 'LED_DRIVE[2]' is not connected to any nets. (LINT-28)
+Warning: In design 'Controller_small', port 'LED_DRIVE[1]' is not connected to any nets. (LINT-28)
+Warning: In design 'Controller_small', port 'LED_DRIVE[0]' is not connected to any nets. (LINT-28)
+1
