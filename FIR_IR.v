@@ -22,7 +22,7 @@ module FIR_IR (
 wire [7:0] coeff[10:0];
 assign coeff[0]= 8'd2; 
 assign coeff[1]=8'd10; 
-assign coeff[2]='d16;
+assign coeff[2]=8'd16;
 assign coeff[3]=8'd28; 
 assign coeff[4]=8'd43;
 assign coeff[5]=8'd60; 
