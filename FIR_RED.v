@@ -47,28 +47,28 @@ reg [19:0] add_temp2;
 //22 shift_register, in_shift [21:0]
 always @(posedge CLK_Filter or negedge rst_n) begin
 	if(!rst_n)begin
-		in_shift[0] <= 7'd0;
-		in_shift[1] <= 7'd0;
-		in_shift[2] <= 7'd0;
-		in_shift[3] <= 7'd0;
-		in_shift[4] <= 7'd0;
-		in_shift[5] <= 7'd0;
-		in_shift[6] <= 7'd0;
-		in_shift[7] <= 7'd0;
-		in_shift[8] <= 7'd0;
-		in_shift[9] <= 7'd0;
-		in_shift[10] <= 7'd0;
-		in_shift[11] <= 7'd0;
-		in_shift[12] <= 7'd0;
-		in_shift[13] <= 7'd0;
-		in_shift[14] <= 7'd0;
-		in_shift[15] <= 7'd0;
-		in_shift[16] <= 7'd0;
-		in_shift[17] <= 7'd0;
-		in_shift[18] <= 7'd0;
-		in_shift[19] <= 7'd0;
-		in_shift[20] <= 7'd0;
-		in_shift[21] <= 7'd0; 
+		in_shift[0] <= 8'd0;
+		in_shift[1] <= 8'd0;
+		in_shift[2] <= 8'd0;
+		in_shift[3] <= 8'd0;
+		in_shift[4] <= 8'd0;
+		in_shift[5] <= 8'd0;
+		in_shift[6] <= 8'd0;
+		in_shift[7] <= 8'd0;
+		in_shift[8] <= 8'd0;
+		in_shift[9] <= 8'd0;
+		in_shift[10] <= 8'd0;
+		in_shift[11] <= 8'd0;
+		in_shift[12] <= 8'd0;
+		in_shift[13] <= 8'd0;
+		in_shift[14] <= 8'd0;
+		in_shift[15] <= 8'd0;
+		in_shift[16] <= 8'd0;
+		in_shift[17] <= 8'd0;
+		in_shift[18] <= 8'd0;
+		in_shift[19] <= 8'd0;
+		in_shift[20] <= 8'd0;
+		in_shift[21] <= 8'd0; 
 	end 
 	else begin
 		in_shift[0] <= RED_ADC_Value;
