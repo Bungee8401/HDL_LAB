@@ -130,8 +130,8 @@ end
 always @(posedge CLK_Filter or negedge rst_n) begin
 	if(!rst_n)begin
 		Out_IR_Filtered <= 20'd0;
-		add_temp1 <= 19'd0;
-		add_temp2 <= 19'd0;
+		add_temp1 <= 20'd0;
+		add_temp2 <= 20'd0;
 	end 
 	else begin
 		add_temp1 <=  mul_reg[0] + mul_reg[1] + mul_reg[2] + mul_reg[3] + mul_reg[4] + mul_reg[5];
